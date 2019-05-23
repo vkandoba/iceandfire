@@ -127,6 +127,8 @@ namespace IceAndFire
                 .Concat(myTerritory.SelectMany(p => p.Area4().Where(c => !IceAndFire.game.Map[c.X, c.Y].IsWall))));
             var freeTerritory = canBeTraining
                 .Except(IceAndFire.game.Buildings.Select(b => b.Position))
+                .Except(IceAndFire.game.MyUnits.Where(u => u.Level == 1).Select(u => u.Position))
+                .Except(IceAndFire.game.MyUnits.Where(u => u.Level > 1).SelectMany(u => u.Position.Area4()))
                 .Except(IceAndFire.game.MyUnits.Select(u => u.Position))
                 .Except(IceAndFire.game.HoldPositions);
 
