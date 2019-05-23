@@ -35,13 +35,27 @@ namespace IceAndFire
             Y = cell.Item2
         };
 
-        public Position[] GetAdjacents()
+        public Position[] Area4()
         {
             var ns = new Position[] {
                 (X, Y-1),
                 (X-1, Y),
                 (X, Y+1),
                 (X+1, Y)
+            };
+            return ns.Where(n => n.X >= 0 && n.X < 12 && n.Y >= 0 && n.Y < 12).ToArray();
+        }
+        public Position[] Area8()
+        {
+            var ns = new Position[] {
+                (X+1, Y-1),
+                (X, Y-1),
+                (X-1, Y-1),
+                (X-1, Y),
+                (X-1, Y+1),
+                (X, Y+1),
+                (X+1, Y),
+                (X+1, Y+1)
             };
             return ns.Where(n => n.X >= 0 && n.X < 12 && n.Y >= 0 && n.Y < 12).ToArray();
         }

@@ -9,6 +9,10 @@
         public int Owner = IceAndFire.NEUTRAL;
 
         public Position Position;
+
+        public Unit Unit;
+        public Building Building;
+
         public int X => Position.X;
         public int Y => Position.Y;
 

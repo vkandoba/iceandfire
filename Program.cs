@@ -67,7 +67,7 @@ namespace IceAndFire
             public List<Position> MyPositions = new List<Position>();
             public List<Position> OpponentPositions = new List<Position>();
             public List<Position> NeutralPositions = new List<Position>();
-            public List<Position> HoldPositions = new List<Position>();
+            public HashSet<Position> HoldPositions = new HashSet<Position>();
 
             public void Init()
             {
@@ -120,6 +120,9 @@ namespace IceAndFire
                         Map[x, y].Owner = c.ToLower() == "o" ? ME : c.ToLower() == "x" ? OPPONENT : NEUTRAL;
                         Map[x, y].HasMineSpot = MineSpots.Count(spot => spot == (x, y)) > 0;
 
+                        Map[x, y].Unit = null;
+                        Map[x, y].Building = null;
+
                         Position p = (x, y);
                         if (Map[x, y].IsOwned)
                             MyPositions.Add(p);
@@ -137,12 +140,14 @@ namespace IceAndFire
                 for (var i = 0; i < buildingCount; i++)
                 {
                     var inputs = Console.ReadLine().Split(' ');
-                    Buildings.Add(new Building
+                    var building = new Building
                     {
                         Owner = int.Parse(inputs[0]),
                         Type = (BuildingType)int.Parse(inputs[1]),
                         Position = (int.Parse(inputs[2]), int.Parse(inputs[3]))
-                    });
+                    };
+                    Buildings.Add(building);
+                    Map[building.X, building.Y].Building = building;
                 }
 
                 // Read Units
@@ -150,13 +155,15 @@ namespace IceAndFire
                 for (var i = 0; i < unitCount; i++)
                 {
                     var inputs = Console.ReadLine().Split(' ');
-                    Units.Add(new Unit
+                    var unit = new Unit
                     {
                         Owner = int.Parse(inputs[0]),
                         Id = int.Parse(inputs[1]),
                         Level = int.Parse(inputs[2]),
                         Position = (int.Parse(inputs[3]), int.Parse(inputs[4]))
-                    });
+                    };
+                    Units.Add(unit);
+                    Map[unit.X, unit.Y].Unit = unit;
                 }
 
                 MyUpkeep = MyUnits.Sum(u => u.Upkeep);
@@ -217,44 +224,6 @@ namespace IceAndFire
             {
                 IceAndFire.game.Output.Append("WAIT;");
             }
-        }
-
-
-        public class Unit : Entity
-        {
-
-            public static readonly int[] UpkeepCosts = {0, 1, 4, 20};
-
-            public int Id;
-            public int Level;
-            public int Upkeep => UpkeepCosts[Level];
-
-            public override string ToString() => $"Unit => {base.ToString()} Id: {Id} Level: {Level}";
-        }
-
-        public class Building : Entity
-        {
-            public BuildingType Type;
-
-            public bool IsHq => Type == BuildingType.Hq;
-            public bool IsTower => Type == BuildingType.Tower;
-            public bool IsMine => Type == BuildingType.Mine;
-
-            public override string ToString() => $"Building => {base.ToString()} Type: {Type}";
-        }
-
-        public class Entity
-        {
-            public int Owner;
-            public Position Position;
-
-            public bool IsOwned => Owner == ME;
-            public bool IsOpponent => Owner == OPPONENT;
-
-            public int X => Position.X;
-            public int Y => Position.Y;
-
-            public override string ToString() => $"Owner: {Owner} Position: {Position}";
         }
     }
 }

@@ -36,17 +36,22 @@ namespace IceAndFire
             }
         }
 
-        public Position GetOccupationMove(IceAndFire.Unit unit)
+        public Position GetOccupationMove(Unit unit)
         {
-            var ns = unit.Position.GetAdjacents();
-            var next = ns.FirstOrDefault(p => !IceAndFire.game.Map[p.X, p.Y].IsOwned && 
-                                              !IceAndFire.game.Map[p.X, p.Y].IsWall);
+            var ns = unit.Position.Area4();
+            var next = ns.Where(p => !IceAndFire.game.Map[p.X, p.Y].IsWall &&
+                                     IceAndFire.game.Map[p.X, p.Y].Unit == null &&
+                                     !IceAndFire.game.HoldPositions.Contains(p))
+                         .OrderByDescending(p => p.Area8()
+                                                    .Where(a => !IceAndFire.game.Map[p.X, p.Y].IsWall &&
+                                                                 IceAndFire.game.Map[p.X, p.Y].IsNeutral)
+                                                    .Count())
+                         .FirstOrDefault();
             return next;
         }
 
         public void TrainUnits()
         {
-            var upkeep = IceAndFire.game.MyUnits.Sum(x => x.Upkeep);
             var placesForTrain = PlacesForTrain();
             if (TrainKiller(placesForTrain))
                 return;
@@ -65,7 +70,7 @@ namespace IceAndFire
             //                        $"{IceAndFire.game.MyUpkeep + IceAndFire.Unit.UpkeepCosts[unitLevel]}, " +
             //                        $"{IceAndFire.game.MyUnits.Count(u => u.Level == unitLevel)}");
             if (IceAndFire.game.MyGold > cost && 
-                (IceAndFire.game.MyIncome >= IceAndFire.game.MyUpkeep + IceAndFire.Unit.UpkeepCosts[unitLevel]) &&
+                (IceAndFire.game.MyIncome >= IceAndFire.game.MyUpkeep + Unit.UpkeepCosts[unitLevel]) &&
                 IceAndFire.game.MyUnits.Count(u => u.Level == unitLevel) < unitLimit)
             {
                 Command.Train(unitLevel, placeForTrain);
@@ -78,7 +83,7 @@ namespace IceAndFire
         public bool TrainSlave(Position[] places, int limit)
         {
             return TrainBase(places, ps => ps
-                    .OrderByDescending(p => p.GetAdjacents().Where(c => !IceAndFire.game.Map[c.X, c.Y].IsOwned).Count())
+                    .OrderByDescending(p => p.Area4().Where(c => !IceAndFire.game.Map[c.X, c.Y].IsOwned).Count())
                     .FirstOrDefault(),
                 1,
                 IceAndFire.TRAIN_COST_LEVEL_1,
@@ -107,7 +112,7 @@ namespace IceAndFire
         {
             var myTerritory = IceAndFire.game.MyPositions;
             var canBeTraining = new HashSet<Position>(myTerritory
-                .Concat(myTerritory.SelectMany(p => p.GetAdjacents())));
+                .Concat(myTerritory.SelectMany(p => p.Area4())));
             var freeTerritory = canBeTraining
                 .Except(IceAndFire.game.Buildings.Select(b => b.Position))
                 .Except(IceAndFire.game.MyUnits.Select(u => u.Position))
