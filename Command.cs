@@ -17,6 +17,7 @@ namespace IceAndFire
             }
 
             IceAndFire.game.HoldGold += cost;
+            IceAndFire.game.HoldPositions.Add(position);
             Command.Apply(IceAndFire.game.Output, $"TRAIN {level} {position.X} {position.Y}");
             return $"TRAIN {level} {position.X} {position.Y}";
         }
