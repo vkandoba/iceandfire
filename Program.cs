@@ -197,7 +197,7 @@ namespace IceAndFire
                 // Make sur the AI doesn't timeout
                 Wait();
 
-                var strategy = new BaseStrategy();
+                IStrategy strategy = Strategies.Growth;
                 strategy.MoveUnits();
 
                 strategy.TrainUnits();

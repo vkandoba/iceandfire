@@ -36,7 +36,7 @@ namespace IceAndFire
             }
         }
 
-        public static Position GetOccupationMove(IceAndFire.Unit unit)
+        public Position GetOccupationMove(IceAndFire.Unit unit)
         {
             var ns = unit.Position.GetAdjacents();
             var next = ns.FirstOrDefault(p => !IceAndFire.game.Map[p.X, p.Y].IsOwned && 
@@ -48,11 +48,11 @@ namespace IceAndFire
         {
             var upkeep = IceAndFire.game.MyUnits.Sum(x => x.Upkeep);
             var placesForTrain = PlacesForTrain();
-            if (TrainKiller(placesForTrain, upkeep))
+            if (TrainKiller(placesForTrain))
                 return;
-            if (TrainSolder(placesForTrain, upkeep))
+            if (TrainSolder(placesForTrain))
                 return;
-            if (TrainSlave(placesForTrain, upkeep))
+            if (TrainSlave(placesForTrain))
                 return;
         }
 
@@ -72,7 +72,7 @@ namespace IceAndFire
             return false;
         }
 
-        public bool TrainSlave(Position[] places, int upkeep)
+        public bool TrainSlave(Position[] places)
         {
             return TrainBase(places, ps => ps
                     .OrderByDescending(p => p.GetAdjacents().Where(c => !IceAndFire.game.Map[c.X, c.Y].IsOwned).Count())
@@ -82,7 +82,7 @@ namespace IceAndFire
                 5);
         }
 
-        public bool TrainSolder(Position[] places, int upkeep)
+        public bool TrainSolder(Position[] places)
         {
             return TrainBase(places, ps => ps.OrderBy(IceAndFire.game.OpponentHq.MDistanceTo)
                     .FirstOrDefault(),
@@ -91,7 +91,7 @@ namespace IceAndFire
                 4);
         }
 
-        public bool TrainKiller(Position[] places, int upkeep)
+        public bool TrainKiller(Position[] places)
         {
             return TrainBase(places, ps => ps.OrderBy(IceAndFire.game.OpponentHq.MDistanceTo)
                     .FirstOrDefault(),
@@ -100,7 +100,7 @@ namespace IceAndFire
                 1);
         }
 
-        public Position[] PlacesForTrain()
+        public static Position[] PlacesForTrain()
         {
             var freeTerritory = GetOccupied()
                 .Except(IceAndFire.game.Buildings.Select(b => b.Position));
@@ -110,7 +110,7 @@ namespace IceAndFire
             return freeTerritory.ToArray();
         }
 
-        public Position[] GetOccupied()
+        public static Position[] GetOccupied()
         {
             var territory = new List<Position>();
             for (var x = 0; x < 12; ++x)
