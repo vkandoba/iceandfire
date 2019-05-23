@@ -97,6 +97,7 @@ namespace IceAndFire
                 OpponentPositions.Clear();
                 NeutralPositions.Clear();
                 HoldPositions.Clear();
+                HoldGold = 0;
 
                 Output.Clear();
 

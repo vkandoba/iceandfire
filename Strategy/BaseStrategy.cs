@@ -57,11 +57,11 @@ namespace IceAndFire
         }
 
         private bool TrainBase(Position[] places, Func<Position[], Position> getPlace, int unitLevel, 
-            int goldLimit, int unitLimit)
+            int cost, int unitLimit)
         {
             Position defaultPlace = IceAndFire.game.MyTeam == Team.Fire ? (1, 0) : (10, 11);
             var placeForTrain = getPlace(places) ?? defaultPlace;
-            if (IceAndFire.game.MyGold > goldLimit && 
+            if (IceAndFire.game.MyGold > cost && 
                 (IceAndFire.game.MyIncome >= IceAndFire.game.MyUpkeep + IceAndFire.Unit.UpkeepCosts[unitLevel]) &&
                 IceAndFire.game.MyUnits.Count(u => u.Level == unitLevel) < unitLimit)
             {
