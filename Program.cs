@@ -21,6 +21,7 @@ namespace IceAndFire
         public const int TRAIN_COST_LEVEL_2 = 20;
         public const int TRAIN_COST_LEVEL_3 = 30;
         public const int MINE_BUILD_COST = 30;
+        public const int TOWER_BUILD_COST = 15;
 
         private static void Main()
         {

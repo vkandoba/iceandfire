@@ -8,10 +8,20 @@ namespace IceAndFire
     {
         public void ConstructBuildings()
         {
-            foreach (var unit in IceAndFire.game.MyUnits)
+            ConstructMines();
+        }
+
+        public void ConstructMines()
+        {
+            var myTerritory = IceAndFire.game.MyPositions
+                .Select(x => IceAndFire.game.Map[x.X, x.Y])
+                .Where(x => x.Active)
+                .ToArray();
+            var mySpots = myTerritory.Where(x => x.HasMineSpot && x.Building == null).ToArray();
+            if (mySpots.Any() && IceAndFire.game.MyGold > IceAndFire.MINE_BUILD_COST)
             {
-                if (IceAndFire.game.MineSpots.Contains(unit.Position) && IceAndFire.game.MyGold > IceAndFire.MINE_BUILD_COST)
-                    Command.Build(BuildingType.Mine, unit.Position);
+                var posForMine = mySpots.Select(s => s.Position).OrderBy(IceAndFire.game.MyHq.MDistanceTo).First();
+                Command.Build(BuildingType.Mine, posForMine);
             }
         }
 
@@ -83,7 +93,9 @@ namespace IceAndFire
         public bool TrainSlave(Position[] places, int limit)
         {
             return TrainBase(places, ps => ps
-                    .OrderByDescending(p => p.Area4().Where(c => !IceAndFire.game.Map[c.X, c.Y].IsOwned).Count())
+                    .OrderByDescending(p => p.Area4()
+                                             .Where(c => !IceAndFire.game.Map[c.X, c.Y].IsOwned &&
+                                                         !IceAndFire.game.Map[c.X, c.Y].IsWall).Count())
                     .FirstOrDefault(),
                 1,
                 IceAndFire.TRAIN_COST_LEVEL_1,
@@ -105,14 +117,14 @@ namespace IceAndFire
                     .FirstOrDefault(),
                 3,
                 IceAndFire.TRAIN_COST_LEVEL_3,
-                1);
+                2);
         }
 
         public static Position[] PlacesForTrain()
         {
-            var myTerritory = IceAndFire.game.MyPositions;
+            var myTerritory = IceAndFire.game.MyPositions.Where(p => IceAndFire.game.Map[p.X, p.Y].Active);
             var canBeTraining = new HashSet<Position>(myTerritory
-                .Concat(myTerritory.SelectMany(p => p.Area4())));
+                .Concat(myTerritory.SelectMany(p => p.Area4().Where(c => !IceAndFire.game.Map[c.X, c.Y].IsWall))));
             var freeTerritory = canBeTraining
                 .Except(IceAndFire.game.Buildings.Select(b => b.Position))
                 .Except(IceAndFire.game.MyUnits.Select(u => u.Position))

@@ -32,6 +32,7 @@ namespace IceAndFire
         public static string Build(BuildingType type, Position position)
         {
             // TODO: Handle map change
+            IceAndFire.game.HoldGold += IceAndFire.MINE_BUILD_COST;
             Command.Apply(IceAndFire.game.Output, $"BUILD {type.ToString().ToUpper()} {position.X} {position.Y}");
             return $"BUILD {type.ToString().ToUpper()} {position.X} {position.Y};";
         }
