@@ -14,6 +14,11 @@ namespace IceAndFire
 
         public void TrainUnits()
         {
+            TrainKiller();
+        }
+
+        public bool TrainKiller()
+        {
             var placesForTrain = BaseStrategy.PlacesForTrain();
 
             var opKiller = placesForTrain
@@ -21,9 +26,12 @@ namespace IceAndFire
                 .Where(t => t.Unit != null)
                 .FirstOrDefault(t => t.Unit.IsOpponent && t.Unit.Level == 3);
             if (opKiller != null && IceAndFire.game.MyGold >= IceAndFire.TRAIN_COST_LEVEL_3)
+            {
                 Command.Train(3, opKiller.Position);
+                return true;
+            }
 
-            Strategies.Base.TrainKiller(placesForTrain);
+            return Strategies.Base.TrainKiller(placesForTrain);
         }
 
         public void ConstructBuildings()
@@ -32,6 +40,14 @@ namespace IceAndFire
             {
             }
             Strategies.Base.ConstructMines();
+            var placesForTrain = BaseStrategy.PlacesForTrain();
+            var neutralPlaces = placesForTrain.Where(c => IceAndFire.game.Map[c.X, c.Y].IsNeutral).ToArray();
+            if (neutralPlaces.Any())
+                Strategies.Base.TrainSlave(neutralPlaces, 20);
+            while (TrainKiller())
+            {
+                
+            }
         }
 
         public bool ConstructTower()

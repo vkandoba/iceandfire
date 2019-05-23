@@ -49,9 +49,11 @@ namespace IceAndFire
 
             public int MyGold => ActualGold - HoldGold;
             public int ActualGold;
+            public int ActuaUpkeep;
             public int HoldGold;
+            public int HoldUpkeep;
             public int MyIncome;
-            public int MyUpkeep;
+            public int MyUpkeep => ActuaUpkeep - HoldUpkeep;
             public Team MyTeam;
 
             public int OpponentGold;
@@ -99,6 +101,7 @@ namespace IceAndFire
                 NeutralPositions.Clear();
                 HoldPositions.Clear();
                 HoldGold = 0;
+                HoldUpkeep = 0;
 
                 Output.Clear();
 
@@ -166,7 +169,7 @@ namespace IceAndFire
                     Units.Add(unit);
                     Map[unit.X, unit.Y].Unit = unit;
                 }
-                MyUpkeep = MyUnits.Sum(u => u.Upkeep);
+                ActuaUpkeep = MyUnits.Sum(u => u.Upkeep);
 
                 // --------------------------------
 
