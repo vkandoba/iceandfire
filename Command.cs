@@ -16,7 +16,7 @@ namespace IceAndFire
                 case 3: cost = IceAndFire.TRAIN_COST_LEVEL_3; break;
             }
 
-            IceAndFire.game.MyGold -= cost;
+            IceAndFire.game.HoldGold += cost;
             Command.Apply(IceAndFire.game.Output, $"TRAIN {level} {position.X} {position.Y}");
             return $"TRAIN {level} {position.X} {position.Y}";
         }
@@ -24,6 +24,7 @@ namespace IceAndFire
         public static string Move(int id, Position position)
         {
             // TODO: Handle map change
+            IceAndFire.game.HoldPositions.Add(position);
             Command.Apply(IceAndFire.game.Output, $"MOVE {id} {position.X} {position.Y}");
             return $"MOVE {id} {position.X} {position.Y}";
         }

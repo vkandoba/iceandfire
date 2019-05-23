@@ -102,25 +102,15 @@ namespace IceAndFire
 
         public static Position[] PlacesForTrain()
         {
-            var freeTerritory = GetOccupied()
-                .Except(IceAndFire.game.Buildings.Select(b => b.Position));
-            foreach (var unit in IceAndFire.game.Units)
-                freeTerritory = freeTerritory.Except(new[] { unit.Position }.Concat(unit.Position.GetAdjacents()));
-
+            var myTerritory = IceAndFire.game.MyPositions;
+            var canBeTraining = new HashSet<Position>(myTerritory
+                .Concat(myTerritory.SelectMany(p => p.GetAdjacents())));
+            var freeTerritory = canBeTraining
+                .Except(IceAndFire.game.Buildings.Select(b => b.Position))
+                .Except(IceAndFire.game.Units.Select(u => u.Position))
+                .Except(IceAndFire.game.HoldPositions);
+                
             return freeTerritory.ToArray();
-        }
-
-        public static Position[] GetOccupied()
-        {
-            var territory = new List<Position>();
-            for (var x = 0; x < 12; ++x)
-            for (var y = 0; y < 12; ++y)
-                if (IceAndFire.game.Map[x, y].Owner == IceAndFire.ME)
-                {
-                    //                           Console.Error.WriteLine($"Position: {Map[x, y].Position} Owner: {Map[x, y].Owner}");
-                    territory.Add(IceAndFire.game.Map[x, y].Position);
-                }
-            return territory.ToArray();
         }
     }
 }

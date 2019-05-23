@@ -46,7 +46,9 @@ namespace IceAndFire
             // Not Usefull in Wood3
             public List<Position> MineSpots = new List<Position>();
 
-            public int MyGold;
+            public int MyGold => ActualGold - HoldGold;
+            public int ActualGold;
+            public int HoldGold;
             public int MyIncome;
             public int MyUpkeep;
             public Team MyTeam;
@@ -65,6 +67,7 @@ namespace IceAndFire
             public List<Position> MyPositions = new List<Position>();
             public List<Position> OpponentPositions = new List<Position>();
             public List<Position> NeutralPositions = new List<Position>();
+            public List<Position> HoldPositions = new List<Position>();
 
             public void Init()
             {
@@ -93,12 +96,13 @@ namespace IceAndFire
                 MyPositions.Clear();
                 OpponentPositions.Clear();
                 NeutralPositions.Clear();
+                HoldPositions.Clear();
 
                 Output.Clear();
 
                 // --------------------------------------
 
-                MyGold = int.Parse(Console.ReadLine());
+                ActualGold = int.Parse(Console.ReadLine());
                 MyIncome = int.Parse(Console.ReadLine());
                 OpponentGold = int.Parse(Console.ReadLine());
                 OpponentIncome = int.Parse(Console.ReadLine());
@@ -179,7 +183,7 @@ namespace IceAndFire
             {
                 Console.Error.WriteLine($"Turn: {Turn}");
                 Console.Error.WriteLine($"My team: {MyTeam}");
-                Console.Error.WriteLine($"My gold: {MyGold} (+{MyIncome})");
+                Console.Error.WriteLine($"My gold: {ActualGold} (+{MyIncome})");
                 Console.Error.WriteLine($"Opponent gold: {OpponentGold} (+{OpponentIncome})");
 
                 Console.Error.WriteLine("=====");
