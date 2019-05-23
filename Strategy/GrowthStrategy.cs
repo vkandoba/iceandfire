@@ -6,12 +6,7 @@ namespace IceAndFire
     {
         public void MoveUnits()
         {
-            var slaves = IceAndFire.game.MyUnits.Where(u => u.Level == 1).ToArray();
-            foreach (var unit in slaves)
-            {
-                var om = Strategies.Base.GetOccupationMove(unit) ?? IceAndFire.game.OpponentHq;
-                Command.Move(unit.Id, om);
-            }
+            Strategies.Base.MoveUnits();
         }
 
         public void TrainUnits()
@@ -27,7 +22,7 @@ namespace IceAndFire
 //                }
 //            }
 
-            Strategies.Base.TrainSlave(placesForTrain);
+            Strategies.Base.TrainSlave(placesForTrain, 20);
         }
 
         public void ConstructBuildings()

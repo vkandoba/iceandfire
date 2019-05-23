@@ -52,7 +52,7 @@ namespace IceAndFire
                 return;
             if (TrainSolder(placesForTrain))
                 return;
-            if (TrainSlave(placesForTrain))
+            if (TrainSlave(placesForTrain, 5))
                 return;
         }
 
@@ -61,6 +61,9 @@ namespace IceAndFire
         {
             Position defaultPlace = IceAndFire.game.MyTeam == Team.Fire ? (1, 0) : (10, 11);
             var placeForTrain = getPlace(places) ?? defaultPlace;
+            //Console.Error.WriteLine($"{IceAndFire.game.MyGold}, " +
+            //                        $"{IceAndFire.game.MyUpkeep + IceAndFire.Unit.UpkeepCosts[unitLevel]}, " +
+            //                        $"{IceAndFire.game.MyUnits.Count(u => u.Level == unitLevel)}");
             if (IceAndFire.game.MyGold > cost && 
                 (IceAndFire.game.MyIncome >= IceAndFire.game.MyUpkeep + IceAndFire.Unit.UpkeepCosts[unitLevel]) &&
                 IceAndFire.game.MyUnits.Count(u => u.Level == unitLevel) < unitLimit)
@@ -71,15 +74,15 @@ namespace IceAndFire
 
             return false;
         }
-
-        public bool TrainSlave(Position[] places)
+        
+        public bool TrainSlave(Position[] places, int limit)
         {
             return TrainBase(places, ps => ps
                     .OrderByDescending(p => p.GetAdjacents().Where(c => !IceAndFire.game.Map[c.X, c.Y].IsOwned).Count())
                     .FirstOrDefault(),
                 1,
                 IceAndFire.TRAIN_COST_LEVEL_1,
-                5);
+                limit);
         }
 
         public bool TrainSolder(Position[] places)
@@ -107,9 +110,9 @@ namespace IceAndFire
                 .Concat(myTerritory.SelectMany(p => p.GetAdjacents())));
             var freeTerritory = canBeTraining
                 .Except(IceAndFire.game.Buildings.Select(b => b.Position))
-                .Except(IceAndFire.game.Units.Select(u => u.Position))
+                .Except(IceAndFire.game.MyUnits.Select(u => u.Position))
                 .Except(IceAndFire.game.HoldPositions);
-                
+
             return freeTerritory.ToArray();
         }
     }

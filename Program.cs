@@ -177,7 +177,7 @@ namespace IceAndFire
                 // --------------------------------
 
                 // Debug
-                Debug();
+                //Debug();
             }
 
             public void Debug()
@@ -202,7 +202,7 @@ namespace IceAndFire
                 // Make sur the AI doesn't timeout
                 Wait();
 
-                IStrategy strategy = Strategies.Growth;
+                var strategy = MyIncome < 20 ? (IStrategy)Strategies.Growth : (IStrategy)Strategies.Base;
                 strategy.MoveUnits();
 
                 strategy.TrainUnits();
