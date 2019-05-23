@@ -28,14 +28,29 @@ namespace IceAndFire
 
         public void ConstructBuildings()
         {
+            while (ConstructTower())
+            {
+            }
+            Strategies.Base.ConstructMines();
+        }
+
+        public bool ConstructTower()
+        {
             if (IceAndFire.game.MyGold < IceAndFire.TOWER_BUILD_COST)
-                return;
+                return false;
 
             var places = PlacesForTower();
             var placesUnderAttact =
                 places.ToDictionary(p => p, p => p.Area8().Count(c => IceAndFire.game.Map[c.X, c.Y].Unit?.IsOpponent == true));
-            var towerPlace = placesUnderAttact.OrderByDescending(p => p.Value).First().Key;
-            Command.Build(BuildingType.Tower, towerPlace);
+            if (placesUnderAttact.Values.Max() > 0)
+            {
+                var towerPlace = placesUnderAttact.OrderByDescending(p => p.Value).First().Key;
+                Console.Error.WriteLine($"{placesUnderAttact.Values.Max()}, {towerPlace}");
+                Command.Build(BuildingType.Tower, towerPlace);
+                return true;
+            }
+
+            return false;
         }
 
         public Position[] PlacesForTower()

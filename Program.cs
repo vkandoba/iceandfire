@@ -166,7 +166,6 @@ namespace IceAndFire
                     Units.Add(unit);
                     Map[unit.X, unit.Y].Unit = unit;
                 }
-
                 MyUpkeep = MyUnits.Sum(u => u.Upkeep);
 
                 // --------------------------------
@@ -186,6 +185,7 @@ namespace IceAndFire
 
                 // Debug
                 //Debug();
+                Console.Error.WriteLine(Map[0, 0].Owner);
             }
 
             public void Debug()
