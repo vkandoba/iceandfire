@@ -71,15 +71,14 @@ namespace IceAndFire
                 return;
         }
 
-        private bool TrainBase(Position[] places, Func<Position[], Position> getPlace, int unitLevel, 
-            int cost, int unitLimit)
+        public bool TrainBase(Position[] places, Func<Position[], Position> getPlace, int unitLevel, int unitLimit)
         {
             Position defaultPlace = IceAndFire.game.MyTeam == Team.Fire ? (1, 0) : (10, 11);
             var placeForTrain = getPlace(places) ?? defaultPlace;
             //Console.Error.WriteLine($"{IceAndFire.game.MyGold}, " +
             //                        $"{IceAndFire.game.MyUpkeep + IceAndFire.Unit.UpkeepCosts[unitLevel]}, " +
             //                        $"{IceAndFire.game.MyUnits.Count(u => u.Level == unitLevel)}");
-            if (IceAndFire.game.MyGold > cost && 
+            if (IceAndFire.game.MyGold >= Unit.TrainCosts[unitLevel] && 
                 (IceAndFire.game.MyIncome >= IceAndFire.game.MyUpkeep + Unit.UpkeepCosts[unitLevel]) &&
                 IceAndFire.game.MyUnits.Count(u => u.Level == unitLevel) < unitLimit)
             {
@@ -98,7 +97,6 @@ namespace IceAndFire
                                                          !IceAndFire.game.Map[c.X, c.Y].IsWall).Count())
                     .FirstOrDefault(),
                 1,
-                IceAndFire.TRAIN_COST_LEVEL_1,
                 limit);
         }
 
@@ -107,7 +105,6 @@ namespace IceAndFire
             return TrainBase(places, ps => ps.OrderBy(IceAndFire.game.OpponentHq.MDistanceTo)
                     .FirstOrDefault(),
                 2,
-                IceAndFire.TRAIN_COST_LEVEL_2,
                 4);
         }
 
@@ -116,7 +113,6 @@ namespace IceAndFire
             return TrainBase(places, ps => ps.OrderBy(IceAndFire.game.OpponentHq.MDistanceTo)
                     .FirstOrDefault(),
                 3,
-                IceAndFire.TRAIN_COST_LEVEL_3,
                 2);
         }
 

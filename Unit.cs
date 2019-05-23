@@ -4,6 +4,7 @@
     {
 
         public static readonly int[] UpkeepCosts = { 0, 1, 4, 20 };
+        public static readonly int[] TrainCosts = { 0, 10, 20, 30 };
 
         public int Id;
         public int Level;
