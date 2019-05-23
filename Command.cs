@@ -23,7 +23,6 @@ namespace IceAndFire
 
         public static string Move(int id, Position position)
         {
-            // TODO: Handle map change
             IceAndFire.game.HoldPositions.Add(position);
             Command.Apply(IceAndFire.game.Output, $"MOVE {id} {position.X} {position.Y}");
             return $"MOVE {id} {position.X} {position.Y}";
@@ -31,8 +30,10 @@ namespace IceAndFire
 
         public static string Build(BuildingType type, Position position)
         {
-            // TODO: Handle map change
-            IceAndFire.game.HoldGold += IceAndFire.MINE_BUILD_COST;
+            if (type == BuildingType.Tower)
+                IceAndFire.game.HoldPositions.Add(position);
+            var cost = type == BuildingType.Mine ? IceAndFire.MINE_BUILD_COST : IceAndFire.TOWER_BUILD_COST;
+            IceAndFire.game.HoldGold += cost;
             Command.Apply(IceAndFire.game.Output, $"BUILD {type.ToString().ToUpper()} {position.X} {position.Y}");
             return $"BUILD {type.ToString().ToUpper()} {position.X} {position.Y};";
         }

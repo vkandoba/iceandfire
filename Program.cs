@@ -23,7 +23,7 @@ namespace IceAndFire
         public const int MINE_BUILD_COST = 30;
         public const int TOWER_BUILD_COST = 15;
 
-        private static void Main()
+        public static void Main()
         {
             game = new Game();
             game.Init();
@@ -210,7 +210,7 @@ namespace IceAndFire
                 // Make sur the AI doesn't timeout
                 Wait();
 
-                var strategy = MyIncome < 20 ? (IStrategy)Strategies.Growth : (IStrategy)Strategies.Base;
+                var strategy = ChoiceStrategy();
                 strategy.MoveUnits();
 
                 strategy.TrainUnits();
@@ -218,6 +218,16 @@ namespace IceAndFire
                 strategy.ConstructBuildings();
 
                 Turn++;
+            }
+
+            private IStrategy ChoiceStrategy()
+            {
+                if (Strategies.Defense.HasMenace())
+                    return Strategies.Defense;
+                if (MyIncome < 30)
+                    return Strategies.Growth;
+
+                return Strategies.Base;
             }
 
 
