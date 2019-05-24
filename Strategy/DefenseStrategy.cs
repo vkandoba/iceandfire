@@ -49,38 +49,17 @@ namespace IceAndFire
             if (IceAndFire.game.MyGold < IceAndFire.TOWER_BUILD_COST)
                 return false;
 
-            var places = PlacesForTower();
+            var places = IceAndFire.game.PlacesForTower();
             var placesUnderAttact =
                 places.ToDictionary(p => p, p => IceAndFire.game.Area8(p).Count(c => c.Unit?.IsOpponent == true));
             if (placesUnderAttact.Values.Max() > 0)
             {
                 var towerPlace = placesUnderAttact.OrderByDescending(p => p.Value).First().Key;
-                Commands.Build(BuildingType.Tower, towerPlace);
+                Commands.Build(BuildingType.Tower, towerPlace.Position);
                 return true;
             }
 
             return false;
-        }
-
-        public Position[] PlacesForTower()
-        {
-            var myTerritory = IceAndFire.game.MyPositions
-                                        .Select(p => IceAndFire.game.Map[p.X, p.Y])
-                                        .Where(s => s.Active && !s.HasMineSpot)
-                                        .Select(s => s.Position);
-            var freeTerritory = myTerritory
-                .Except(IceAndFire.game.Buildings.Select(b => b.Position))
-                .Except(IceAndFire.game.MyUnits.Select(u => u.Position))
-                .Except(IceAndFire.game.HoldPositions);
-
-            return freeTerritory.ToArray();
-        }
-
-        public bool HasMenace(GameMap gameMap)
-        {
-            var opponents = gameMap.OpponentUnits;
-            var around = opponents.SelectMany(op => gameMap.Area8(op.Position));
-            return around.Where(p => p.IsOwned).Any();
         }
     }
 }

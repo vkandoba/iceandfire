@@ -7,7 +7,6 @@ namespace IceAndFire
 {
     public class IceAndFire
     {
-
         public static GameMap game => gameEngine.Map;
 
         public static Game gameEngine;
@@ -18,7 +17,6 @@ namespace IceAndFire
 
         public const int MINE_BUILD_COST = 30;
         public const int TOWER_BUILD_COST = 15;
-
 
         public static void Main()
         {
@@ -37,12 +35,10 @@ namespace IceAndFire
                 gameEngine.Turn++;
             }
         }
-
     }
 
     public class Game
     {
-
         public Game(GameMap map)
         {
             Map = map;
@@ -72,7 +68,7 @@ namespace IceAndFire
 
         private IStrategy ChoiceStrategy(GameMap gameMap)
         {
-            if (Strategies.Defense.HasMenace(gameMap))
+            if (gameMap.HasMenace())
                 return Strategies.Defense;
             if (gameMap.MyIncome < 30)
                 return Strategies.Growth;

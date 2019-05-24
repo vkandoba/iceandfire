@@ -169,8 +169,13 @@ namespace IceAndFire
 
         public Tile[] PlacesForTrain(int level = 1)
         {
-            var territory = MyPositions.Concat(MyPositions.SelectMany(this.Area4));
+            var territory = MyPositions.Concat(MyPositions.SelectMany(this.Area4)).Distinct();
             return territory.Where(t => AllowTrain(t, level)).ToArray();
+        }
+
+        public Tile[] PlacesForTower()
+        {
+            return MyPositions.Where(AllowBuilldTower).ToArray();
         }
 
         private bool AllowTrain(Tile tile, int level = 1)
@@ -180,6 +185,16 @@ namespace IceAndFire
                      tile.Unit?.IsOwned == true || (tile.Unit?.Level ?? 0) >= level);
         }
 
+        private bool AllowBuilldTower(Tile tile)
+        {
+            return tile.Unit == null && tile.Building == null && !tile.HasMineSpot && !HoldPositions.Contains(tile.Position);
+        }
+
+        public bool HasMenace()
+        {
+            var around = OpponentUnits.SelectMany(op => this.Area8(op.Position));
+            return around.Where(p => p.IsOwned).Any();
+        }
 
         public static Position[] FindPathInternal(Func<Position, bool> isFree, 
             Position source,
