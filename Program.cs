@@ -8,7 +8,8 @@ namespace IceAndFire
     public class IceAndFire
     {
 
-        public static GameMap game;
+        public static GameMap game => gameEngine.Map;
+
         public static Game gameEngine;
 
         public const int ME = 0;
@@ -21,17 +22,17 @@ namespace IceAndFire
 
         public static void Main()
         {
-            game = new GameMap();
-            game.Init();
-            gameEngine = new Game();
+            var gameMap = new GameMap();
+            gameMap.Init();
+            gameEngine = new Game(gameMap);
 
             gameEngine.Turn = 0;
             // game loop
             while (true)
             {
                 gameEngine.Output.Clear();
-                game.Update();
-                gameEngine.Solve(game);
+                gameMap.Update();
+                gameEngine.Solve(gameMap);
                 Console.WriteLine(gameEngine.Output.ToString());
                 gameEngine.Turn++;
             }
@@ -42,7 +43,13 @@ namespace IceAndFire
     public class Game
     {
 
+        public Game(GameMap map)
+        {
+            Map = map;
+        }
+
         public readonly StringBuilder Output = new StringBuilder();
+        public readonly GameMap Map;
 
         public int Turn { get; set; }
         /***
@@ -55,13 +62,19 @@ namespace IceAndFire
             // Make sur the AI doesn't timeout
             Wait();
 
+            var commands = new List<ICommand>();
+
             var strategy = ChoiceStrategy(gameMap);
-            strategy.MoveUnits();
+            commands.AddRange(strategy.MoveUnits());
 
-            strategy.TrainUnits();
+            commands.AddRange(strategy.TrainUnits());
 
-            strategy.ConstructBuildings();
+            commands.AddRange(strategy.ConstructBuildings());
 
+            foreach (var cmd in commands)
+            {
+                cmd.Apply(this);
+            }
         }
 
         private IStrategy ChoiceStrategy(GameMap gameMap)

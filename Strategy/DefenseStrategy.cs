@@ -1,21 +1,19 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 namespace IceAndFire
 {
     public class DefenseStrategy : IStrategy
     {
-        public void MoveUnits()
+        public ICommand[] MoveUnits() => Strategies.Base.MoveUnits();
+
+        public ICommand[] TrainUnits()
         {
-            Strategies.Base.MoveUnits();
+            var trainKiller = TrainKiller();
+            return trainKiller == null ? new ICommand[0] : new[] {trainKiller};
         }
 
-        public void TrainUnits()
-        {
-            TrainKiller();
-        }
-
-        public bool TrainKiller()
+        public ICommand TrainKiller()
         {
             var placesForTrain = BaseStrategy.PlacesForTrain();
 
@@ -25,33 +23,43 @@ namespace IceAndFire
                 .FirstOrDefault(t => t.Unit.IsOpponent && t.Unit.Level == 3);
             if (opKiller != null && IceAndFire.game.MyGold >= Unit.TrainCosts[3])
             {
-                Command.Train(3, opKiller.Position);
-                return true;
+                return Commands.Train(3, opKiller.Position);
             }
 
             return Strategies.Base.TrainKiller(placesForTrain);
         }
 
-        public void ConstructBuildings()
+        public ICommand[] ConstructBuildings()
         {
-            while (ConstructTower())
+            var cmd = new List<ICommand>();
+
+            var constructTower = ConstructTower();
+            while (constructTower != null)
             {
+                cmd.Add(constructTower);
+                constructTower = ConstructTower();
             }
-            Strategies.Base.ConstructMines();
+
+            cmd.AddRange(Strategies.Base.ConstructMines());
             var placesForTrain = BaseStrategy.PlacesForTrain();
             var neutralPlaces = placesForTrain.Where(c => IceAndFire.game.Map[c.X, c.Y].IsNeutral).ToArray();
             if (neutralPlaces.Any())
-                Strategies.Base.TrainSlave(neutralPlaces, 20);
-            while (TrainKiller())
+                cmd.Add(Strategies.Base.TrainSlave(neutralPlaces, 20));
+
+            var trainKiller = TrainKiller();
+            while (trainKiller != null)
             {
-                
+                cmd.Add(trainKiller);
+                trainKiller = TrainKiller();
             }
+
+            return cmd.ToArray();
         }
 
-        public bool ConstructTower()
+        public ICommand ConstructTower()
         {
             if (IceAndFire.game.MyGold < IceAndFire.TOWER_BUILD_COST)
-                return false;
+                return null;
 
             var places = PlacesForTower();
             var placesUnderAttact =
@@ -59,12 +67,10 @@ namespace IceAndFire
             if (placesUnderAttact.Values.Max() > 0)
             {
                 var towerPlace = placesUnderAttact.OrderByDescending(p => p.Value).First().Key;
-                Console.Error.WriteLine($"{placesUnderAttact.Values.Max()}, {towerPlace}");
-                Command.Build(BuildingType.Tower, towerPlace);
-                return true;
+                return Commands.Build(BuildingType.Tower, towerPlace);
             }
 
-            return false;
+            return null;
         }
 
         public Position[] PlacesForTower()

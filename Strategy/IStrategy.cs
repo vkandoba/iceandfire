@@ -2,8 +2,8 @@
 {
     public interface IStrategy
     {
-        void MoveUnits();
-        void TrainUnits();
-        void ConstructBuildings();
+        ICommand[] MoveUnits();
+        ICommand[] TrainUnits();
+        ICommand[] ConstructBuildings();
     }
 }
