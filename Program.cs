@@ -62,13 +62,12 @@ namespace IceAndFire
             // Make sur the AI doesn't timeout
             Wait();
 
-            var commands = new List<ICommand>();
-
             var strategy = ChoiceStrategy(gameMap);
+            Console.Error.WriteLine($"strategy: {strategy.GetType().Name}");
+
+            var commands = new List<ICommand>();
             commands.AddRange(strategy.MoveUnits());
-
             commands.AddRange(strategy.TrainUnits());
-
             commands.AddRange(strategy.ConstructBuildings());
 
             foreach (var cmd in commands)
@@ -79,7 +78,7 @@ namespace IceAndFire
 
         private IStrategy ChoiceStrategy(GameMap gameMap)
         {
-            if (Strategies.Defense.HasMenace())
+            if (Strategies.Defense.HasMenace(gameMap))
                 return Strategies.Defense;
             if (gameMap.MyIncome < 30)
                 return Strategies.Growth;

@@ -87,10 +87,10 @@ namespace IceAndFire
             return freeTerritory.ToArray();
         }
 
-        public bool HasMenace()
+        public bool HasMenace(GameMap gameMap)
         {
-            var opponents = IceAndFire.game.OpponentUnits;
-            var around = opponents.SelectMany(op => IceAndFire.game.Area8(op.Position));
+            var opponents = gameMap.OpponentUnits;
+            var around = opponents.SelectMany(op => gameMap.Area8(op.Position));
             return around.Where(p => p.IsOwned).Any();
         }
     }
