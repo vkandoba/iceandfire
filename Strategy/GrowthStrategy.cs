@@ -25,7 +25,7 @@ namespace IceAndFire
             var cells = places.ToDictionary(p => p, p => IceAndFire.game.Area8(p)
                 .Where(c => !c.IsOwned && !c.IsWall).Count());
             var maxCells = cells.Values.Max();
-            return cells.Where(c => c.Value == maxCells).OrderByDescending(c => IceAndFire.game.MyHq.MDistanceTo(c.Key)).FirstOrDefault().Key;
+            return cells.Where(c => c.Value == maxCells).OrderBy(c => IceAndFire.game.MyHq.MDistanceTo(c.Key)).FirstOrDefault().Key;
         }
 
         public void ConstructBuildings()

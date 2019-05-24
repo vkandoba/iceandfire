@@ -174,20 +174,18 @@ namespace IceAndFire
         {
             var queue = new Queue<Position>();
             var path = new Dictionary<Position, Position>();
+            path[source] = source;
             queue.Enqueue(source);
             do
             {
                 var pos = queue.Dequeue();
                 if (pos == target)
-                {
-                    path[target] = pos;
                     return BuidlPath(path, target, source);
-                }
                 var area = pos.Area4().Where(isFree).Where(c => !path.ContainsKey(c));
                 foreach (var c in area)
                 {
                     path[c] = pos;
-                    queue.Enqueue(pos);
+                    queue.Enqueue(c);
                 }
             } while (queue.Any());
 

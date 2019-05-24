@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "iceandfire", "iceandfire.cs
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "builder", "..\Builder\builder.csproj", "{0F1C8C36-DB8E-4AE2-8063-969646DE02A0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IceAndFireTest", "..\IceAndFireTest\IceAndFireTest.csproj", "{5144308A-622B-4C11-9F4F-0FB39E0DAFDA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{0F1C8C36-DB8E-4AE2-8063-969646DE02A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0F1C8C36-DB8E-4AE2-8063-969646DE02A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0F1C8C36-DB8E-4AE2-8063-969646DE02A0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5144308A-622B-4C11-9F4F-0FB39E0DAFDA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5144308A-622B-4C11-9F4F-0FB39E0DAFDA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5144308A-622B-4C11-9F4F-0FB39E0DAFDA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5144308A-622B-4C11-9F4F-0FB39E0DAFDA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
