@@ -15,10 +15,9 @@ namespace IceAndFire
 
         public ICommand TrainKiller()
         {
-            var placesForTrain = BaseStrategy.PlacesForTrain();
+            var placesForTrain = IceAndFire.game.PlacesForTrain();
 
             var opKiller = placesForTrain
-                .Select(p => IceAndFire.game.Map[p.X, p.Y])
                 .Where(t => t.Unit != null)
                 .FirstOrDefault(t => t.Unit.IsOpponent && t.Unit.Level == 3);
             if (opKiller != null && IceAndFire.game.MyGold >= Unit.TrainCosts[3])
@@ -41,8 +40,8 @@ namespace IceAndFire
             }
 
             cmd.AddRange(Strategies.Base.ConstructMines());
-            var placesForTrain = BaseStrategy.PlacesForTrain();
-            var neutralPlaces = placesForTrain.Where(c => IceAndFire.game.Map[c.X, c.Y].IsNeutral).ToArray();
+            var placesForTrain = IceAndFire.game.PlacesForTrain();
+            var neutralPlaces = placesForTrain.Where(c => c.IsNeutral).ToArray();
             if (neutralPlaces.Any())
                 cmd.Add(Strategies.Base.TrainSlave(neutralPlaces, 20));
 

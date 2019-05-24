@@ -53,7 +53,7 @@ namespace IceAndFire
         public Tile GetOccupationMove(Unit unit)
         {
             var ns = IceAndFire.game.Area4(unit.Position);
-            var next = ns.Where(c => !c.IsWall && c.Unit == null && !IceAndFire.game.HoldPositions.Contains(c.Position))
+            var next = ns.Where(c => c.Unit == null && !IceAndFire.game.HoldPositions.Contains(c.Position))
                          .OrderByDescending(p => IceAndFire.game.Area8(p)
                                                     .Where(c => !c.IsWall && c.IsNeutral)
                                                     .Count())
@@ -63,7 +63,7 @@ namespace IceAndFire
 
         public ICommand[] TrainUnits()
         {
-            var placesForTrain = PlacesForTrain();
+            var placesForTrain = IceAndFire.game.PlacesForTrain();
             var trainKiller = TrainKiller(placesForTrain);
             if (trainKiller != null)
                 return new []{ trainKiller };
@@ -77,9 +77,9 @@ namespace IceAndFire
             return new ICommand[0];
         }
 
-        public ICommand TrainBase(Position[] places, Func<Position[], Position> getPlace, int unitLevel, int unitLimit)
+        public ICommand TrainBase(Tile[] places, Func<Tile[], Tile> getPlace, int unitLevel, int unitLimit)
         {
-            Position defaultPlace = IceAndFire.game.MyTeam == Team.Fire ? (1, 0) : (10, 11);
+            var defaultPlace = IceAndFire.game.Area4(IceAndFire.game.MyHq).First();
             var placeForTrain = getPlace(places) ?? defaultPlace;
             //Console.Error.WriteLine($"{IceAndFire.game.MyGold}, " +
             //                        $"{IceAndFire.game.MyUpkeep + IceAndFire.Unit.UpkeepCosts[unitLevel]}, " +
@@ -88,13 +88,13 @@ namespace IceAndFire
                 (IceAndFire.game.MyIncome >= IceAndFire.game.MyUpkeep + Unit.UpkeepCosts[unitLevel]) &&
                 IceAndFire.game.MyUnits.Count(u => u.Level == unitLevel) < unitLimit)
             {
-                return Commands.Train(unitLevel, placeForTrain);
+                return Commands.Train(unitLevel, placeForTrain.Position);
             }
 
             return null;
         }
         
-        public ICommand TrainSlave(Position[] places, int limit)
+        public ICommand TrainSlave(Tile[] places, int limit)
         {
             return TrainBase(places, ps => ps
                     .OrderByDescending(p => IceAndFire.game.Area4(p)
@@ -104,35 +104,21 @@ namespace IceAndFire
                 limit);
         }
 
-        public ICommand TrainSolder(Position[] places)
+        public ICommand TrainSolder(Tile[] places)
         {
-            return TrainBase(places, ps => ps.OrderBy(IceAndFire.game.OpponentHq.MDistanceTo)
+            return TrainBase(places, ps => ps.OrderBy(c => IceAndFire.game.OpponentHq.MDistanceTo(c.Position))
                     .FirstOrDefault(),
                 2,
                 4);
         }
 
-        public ICommand TrainKiller(Position[] places)
+        public ICommand TrainKiller(Tile[] places)
         {
-            return TrainBase(places, ps => ps.OrderBy(IceAndFire.game.OpponentHq.MDistanceTo)
+            return TrainBase(places, ps => ps.OrderBy(c => IceAndFire.game.OpponentHq.MDistanceTo(c.Position))
                     .FirstOrDefault(),
                 3,
                 2);
         }
 
-        public static Position[] PlacesForTrain()
-        {
-            var myTerritory = IceAndFire.game.MyPositions.Where(p => IceAndFire.game.Map[p.X, p.Y].Active).ToArray();
-            var canBeTraining = new HashSet<Position>(myTerritory
-                .Concat(myTerritory.SelectMany(p => IceAndFire.game.Area4(p).Where(c => !c.IsWall).Select(c => c.Position))));
-            var freeTerritory = canBeTraining
-                .Except(IceAndFire.game.Buildings.Select(b => b.Position))
-                .Except(IceAndFire.game.MyUnits.Where(u => u.Level == 1).Select(u => u.Position))
-                .Except(IceAndFire.game.MyUnits.Where(u => u.Level > 1).SelectMany(u => u.Position.Area4()))
-                .Except(IceAndFire.game.MyUnits.Select(u => u.Position))
-                .Except(IceAndFire.game.HoldPositions);
-
-            return freeTerritory.ToArray();
-        }
     }
 }

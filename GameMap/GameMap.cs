@@ -29,9 +29,9 @@ namespace IceAndFire
         public Position MyHq => MyTeam == Team.Fire ? (0, 0) : (11, 11);
         public Position OpponentHq => MyTeam == Team.Fire ? (11, 11) : (0, 0);
 
-        public List<Position> MyPositions = new List<Position>();
-        public List<Position> OpponentPositions = new List<Position>();
-        public List<Position> NeutralPositions = new List<Position>();
+        public List<Tile> MyPositions = new List<Tile>();
+        public List<Tile> OpponentPositions = new List<Tile>();
+        public List<Tile> NeutralPositions = new List<Tile>();
         public HashSet<Position> HoldPositions = new HashSet<Position>();
 
         public List<Unit> MyUnits => Units.Where(u => u.IsOwned).ToList();
@@ -93,14 +93,13 @@ namespace IceAndFire
                     Map[x, y].Unit = null;
                     Map[x, y].Building = null;
 
-                    Position p = (x, y);
-                    if (Map[x, y].IsOwned)
-                        MyPositions.Add(p);
-                    else if (Map[x, y].IsOpponent)
-                        OpponentPositions.Add(p);
+                    if (Map[x, y].IsOwned && Map[x, y].Active)
+                        MyPositions.Add(Map[x, y]);
+                    else if (Map[x, y].IsOpponent && Map[x, y].Active)
+                        OpponentPositions.Add(Map[x, y]);
                     else if (!Map[x, y].IsWall)
                     {
-                        NeutralPositions.Add(p);
+                        NeutralPositions.Add(Map[x, y]);
                     }
                 }
             }
@@ -167,6 +166,20 @@ namespace IceAndFire
             foreach (var b in Buildings) Console.Error.WriteLine(b);
             foreach (var u in Units) Console.Error.WriteLine(u);
         }
+
+        public Tile[] PlacesForTrain(int level = 1)
+        {
+            var territory = MyPositions.Concat(MyPositions.SelectMany(this.Area4));
+            return territory.Where(t => AllowTrain(t, level)).ToArray();
+        }
+
+        private bool AllowTrain(Tile tile, int level = 1)
+        {
+            return !(HoldPositions.Contains(tile.Position) ||
+                     tile.Building?.IsTower == true ||
+                     tile.Unit?.IsOwned == true || (tile.Unit?.Level ?? 0) >= level);
+        }
+
 
         public static Position[] FindPathInternal(Func<Position, bool> isFree, 
             Position source,

@@ -12,12 +12,12 @@ namespace IceAndFire
 
         public static Tile[] Area4(this GameMap gameMap, Position pos)
         {
-            return pos.Area4().Select(p => gameMap.Map[p.X, p.Y]).ToArray();
+            return pos.Area4().Select(p => gameMap.Map[p.X, p.Y]).Where(t => !t.IsWall).ToArray();
         }
 
         public static Tile[] Area8(this GameMap gameMap, Position pos)
         {
-            return pos.Area8().Select(p => gameMap.Map[p.X, p.Y]).ToArray();
+            return pos.Area8().Select(p => gameMap.Map[p.X, p.Y]).Where(t => !t.IsWall).ToArray();
         }
     }
 }
