@@ -42,7 +42,10 @@ namespace IceAndFire
             var solders = IceAndFire.game.MyUnits.Where(u => u.Level > 1).ToArray();
             foreach (var solder in solders)
             {
-                Command.Move(solder.Id, target);
+                var path = GameMap.FindPathInternal(p => !IceAndFire.game.Map[p.X, p.Y].IsWall && 
+                                                                     IceAndFire.game.Map[p.X, p.Y]?.Unit?.IsOwned != true,
+                    solder.Position, target);
+                Command.Move(solder.Id, path[0]);
             }
         }
 

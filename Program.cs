@@ -66,6 +66,7 @@ namespace IceAndFire
 
         private IStrategy ChoiceStrategy(GameMap gameMap)
         {
+            return Strategies.Base;
             if (Strategies.Defense.HasMenace())
                 return Strategies.Defense;
             if (gameMap.MyIncome < 30)
