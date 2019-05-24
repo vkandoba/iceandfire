@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace IceAndFire
 {
@@ -25,7 +23,7 @@ namespace IceAndFire
                 .Select(p => IceAndFire.game.Map[p.X, p.Y])
                 .Where(t => t.Unit != null)
                 .FirstOrDefault(t => t.Unit.IsOpponent && t.Unit.Level == 3);
-            if (opKiller != null && IceAndFire.game.MyGold >= IceAndFire.TRAIN_COST_LEVEL_3)
+            if (opKiller != null && IceAndFire.game.MyGold >= Unit.TrainCosts[3])
             {
                 Command.Train(3, opKiller.Position);
                 return true;
