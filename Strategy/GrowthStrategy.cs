@@ -22,9 +22,8 @@ namespace IceAndFire
 
         private Position GetSlaveTrainPlace(Position[] places)
         {
-            var cells = places.ToDictionary(p => p, p => p.Area8()
-                .Where(c => !IceAndFire.game.Map[c.X, c.Y].IsOwned &&
-                            !IceAndFire.game.Map[c.X, c.Y].IsWall).Count());
+            var cells = places.ToDictionary(p => p, p => IceAndFire.game.Area8(p)
+                .Where(c => !c.IsOwned && !c.IsWall).Count());
             var maxCells = cells.Values.Max();
             return cells.Where(c => c.Value == maxCells).OrderByDescending(c => IceAndFire.game.MyHq.MDistanceTo(c.Key)).FirstOrDefault().Key;
         }

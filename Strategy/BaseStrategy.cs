@@ -34,7 +34,7 @@ namespace IceAndFire
             var workers = IceAndFire.game.MyUnits.Where(u => u.Level == 1).ToArray();
             foreach (var unit in workers)
             {
-                var om = GetOccupationMove(unit) ?? target;
+                var om = GetOccupationMove(unit)?.Position ?? target;
                 Command.Move(unit.Id, om);
                 IceAndFire.game.Map[om.X, om.Y].Owner = IceAndFire.ME;
             }
@@ -46,15 +46,12 @@ namespace IceAndFire
             }
         }
 
-        public Position GetOccupationMove(Unit unit)
+        public Tile GetOccupationMove(Unit unit)
         {
-            var ns = unit.Position.Area4();
-            var next = ns.Where(p => !IceAndFire.game.Map[p.X, p.Y].IsWall &&
-                                     IceAndFire.game.Map[p.X, p.Y].Unit == null &&
-                                     !IceAndFire.game.HoldPositions.Contains(p))
-                         .OrderByDescending(p => p.Area8()
-                                                    .Where(a => !IceAndFire.game.Map[p.X, p.Y].IsWall &&
-                                                                 IceAndFire.game.Map[p.X, p.Y].IsNeutral)
+            var ns = IceAndFire.game.Area4(unit.Position);
+            var next = ns.Where(c => !c.IsWall && c.Unit == null && !IceAndFire.game.HoldPositions.Contains(c.Position))
+                         .OrderByDescending(p => IceAndFire.game.Area8(p)
+                                                    .Where(c => !c.IsWall && c.IsNeutral)
                                                     .Count())
                          .FirstOrDefault();
             return next;
@@ -92,9 +89,8 @@ namespace IceAndFire
         public bool TrainSlave(Position[] places, int limit)
         {
             return TrainBase(places, ps => ps
-                    .OrderByDescending(p => p.Area4()
-                                             .Where(c => !IceAndFire.game.Map[c.X, c.Y].IsOwned &&
-                                                         !IceAndFire.game.Map[c.X, c.Y].IsWall).Count())
+                    .OrderByDescending(p => IceAndFire.game.Area4(p)
+                                             .Where(c => !c.IsOwned && !c.IsWall).Count())
                     .FirstOrDefault(),
                 1,
                 limit);
@@ -118,9 +114,9 @@ namespace IceAndFire
 
         public static Position[] PlacesForTrain()
         {
-            var myTerritory = IceAndFire.game.MyPositions.Where(p => IceAndFire.game.Map[p.X, p.Y].Active);
+            var myTerritory = IceAndFire.game.MyPositions.Where(p => IceAndFire.game.Map[p.X, p.Y].Active).ToArray();
             var canBeTraining = new HashSet<Position>(myTerritory
-                .Concat(myTerritory.SelectMany(p => p.Area4().Where(c => !IceAndFire.game.Map[c.X, c.Y].IsWall))));
+                .Concat(myTerritory.SelectMany(p => IceAndFire.game.Area4(p).Where(c => !c.IsWall).Select(c => c.Position))));
             var freeTerritory = canBeTraining
                 .Except(IceAndFire.game.Buildings.Select(b => b.Position))
                 .Except(IceAndFire.game.MyUnits.Where(u => u.Level == 1).Select(u => u.Position))

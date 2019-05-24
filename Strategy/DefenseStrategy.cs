@@ -55,7 +55,7 @@ namespace IceAndFire
 
             var places = PlacesForTower();
             var placesUnderAttact =
-                places.ToDictionary(p => p, p => p.Area8().Count(c => IceAndFire.game.Map[c.X, c.Y].Unit?.IsOpponent == true));
+                places.ToDictionary(p => p, p => IceAndFire.game.Area8(p).Count(c => c.Unit?.IsOpponent == true));
             if (placesUnderAttact.Values.Max() > 0)
             {
                 var towerPlace = placesUnderAttact.OrderByDescending(p => p.Value).First().Key;
@@ -84,8 +84,8 @@ namespace IceAndFire
         public bool HasMenace()
         {
             var opponents = IceAndFire.game.OpponentUnits;
-            var around = opponents.SelectMany(op => op.Position.Area8());
-            return around.Where(p => IceAndFire.game.Map[p.X, p.Y].IsOwned).Any();
+            var around = opponents.SelectMany(op => IceAndFire.game.Area8(op.Position));
+            return around.Where(p => p.IsOwned).Any();
         }
     }
 }

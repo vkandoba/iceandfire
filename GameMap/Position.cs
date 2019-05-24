@@ -61,11 +61,9 @@ namespace IceAndFire
             return ns.Where(n => n.X >= 0 && n.X < 12 && n.Y >= 0 && n.Y < 12).ToArray();
         }
 
-
         public override string ToString() => $"({X},{Y})";
 
         public static bool operator ==(Position obj1, Position obj2) => obj1?.Equals(obj2) ?? ReferenceEquals(obj2, null);
-                                                                        
         public static bool operator !=(Position obj1, Position obj2) => !(obj1 == obj2);
 
         public double MDistanceTo(Position p) => Math.Abs(X - p.X) + Math.Abs(Y - p.Y);
