@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 
 namespace IceAndFire
 {
@@ -11,20 +12,18 @@ namespace IceAndFire
 
         public void TrainUnits()
         {
-            if (IceAndFire.game.MyGold >= IceAndFire.MINE_BUILD_COST &&
-                IceAndFire.game.MyGold < IceAndFire.MINE_BUILD_COST + Unit.TrainCosts[1])
-                return;
-
             var placesForTrain = IceAndFire.game.PlacesForTrain();
+            Console.Error.WriteLine($"places for train:{placesForTrain.Aggregate("", (acc, pos) => $"{acc}|{pos}")}");
 
             Strategies.Base.TrainBase(placesForTrain, GetSlaveTrainPlace, 1, 20);
         }
 
         private Tile GetSlaveTrainPlace(Tile[] places)
         {
-            var cells = places.ToDictionary(p => p, p => IceAndFire.game.Area8(p)
+            var cells = places.ToDictionary(p => p, p => IceAndFire.game.Area4(p)
                 .Where(c => !c.IsOwned).Count());
             var maxCells = cells.Values.Max();
+            Console.Error.WriteLine($"maxCells:{maxCells}");
             return cells.Where(c => c.Value == maxCells).OrderByDescending(c => IceAndFire.game.MyHq.MDistanceTo(c.Key.Position)).FirstOrDefault().Key;
         }
         public void ConstructBuildings()

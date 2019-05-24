@@ -19,5 +19,7 @@
         public bool IsOwned => Owner == IceAndFire.ME;
         public bool IsOpponent => Owner == IceAndFire.OPPONENT;
         public bool IsNeutral => Owner == IceAndFire.NEUTRAL;
+
+        public override string ToString() => $"({X},{Y})";
     }
 }

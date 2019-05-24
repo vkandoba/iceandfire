@@ -181,7 +181,7 @@ namespace IceAndFire
         private bool AllowTrain(Tile tile, int level = 1)
         {
             return !(HoldPositions.Contains(tile.Position) ||
-                     tile.Building?.IsTower == true ||
+                     (tile.Building != null && tile.IsOwned) ||
                      tile.Unit?.IsOwned == true || (tile.Unit?.Level ?? 0) >= level);
         }
 
