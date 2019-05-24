@@ -4,19 +4,20 @@ namespace IceAndFire
 {
     public class GrowthStrategy : IStrategy
     {
-        public ICommand[] MoveUnits() => Strategies.Base.MoveUnits();
-        public ICommand[] ConstructBuildings() => Strategies.Base.ConstructMines();
+        public void MoveUnits()
+        {
+            Strategies.Base.MoveUnits();
+        }
 
-        public ICommand[] TrainUnits()
+        public void TrainUnits()
         {
             if (IceAndFire.game.MyGold >= IceAndFire.MINE_BUILD_COST &&
                 IceAndFire.game.MyGold < IceAndFire.MINE_BUILD_COST + Unit.TrainCosts[1])
-                return new ICommand[0];
+                return;
 
             var placesForTrain = IceAndFire.game.PlacesForTrain();
 
-            var train = Strategies.Base.TrainBase(placesForTrain, GetSlaveTrainPlace, 1, 20);
-            return train == null ? new ICommand[0] : new []{train};
+            Strategies.Base.TrainBase(placesForTrain, GetSlaveTrainPlace, 1, 20);
         }
 
         private Tile GetSlaveTrainPlace(Tile[] places)
@@ -25,6 +26,10 @@ namespace IceAndFire
                 .Where(c => !c.IsOwned).Count());
             var maxCells = cells.Values.Max();
             return cells.Where(c => c.Value == maxCells).OrderByDescending(c => IceAndFire.game.MyHq.MDistanceTo(c.Key.Position)).FirstOrDefault().Key;
+        }
+        public void ConstructBuildings()
+        {
+            Strategies.Base.ConstructMines();
         }
     }
 }

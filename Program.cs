@@ -65,15 +65,9 @@ namespace IceAndFire
             var strategy = ChoiceStrategy(gameMap);
             Console.Error.WriteLine($"strategy: {strategy.GetType().Name}");
 
-            var commands = new List<ICommand>();
-            commands.AddRange(strategy.MoveUnits());
-            commands.AddRange(strategy.TrainUnits());
-            commands.AddRange(strategy.ConstructBuildings());
-
-            foreach (var cmd in commands)
-            {
-                cmd.Apply(this);
-            }
+            strategy.MoveUnits();
+            strategy.TrainUnits();
+            strategy.ConstructBuildings();
         }
 
         private IStrategy ChoiceStrategy(GameMap gameMap)

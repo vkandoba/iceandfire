@@ -6,9 +6,9 @@ namespace IceAndFire
 {
     public class BaseStrategy : IStrategy
     {
-        public ICommand[] ConstructBuildings() => ConstructMines();
+        public void ConstructBuildings() => ConstructMines();
 
-        public ICommand[] ConstructMines()
+        public void ConstructMines()
         {
             var myTerritory = IceAndFire.game.MyPositions
                 .Select(x => IceAndFire.game.Map[x.X, x.Y])
@@ -18,24 +18,21 @@ namespace IceAndFire
             if (mySpots.Any() && IceAndFire.game.MyGold > IceAndFire.MINE_BUILD_COST)
             {
                 var posForMine = mySpots.Select(s => s.Position).OrderBy(IceAndFire.game.MyHq.MDistanceTo).First();
-                return new [] {Commands.Build(BuildingType.Mine, posForMine)};
+                Commands.Build(BuildingType.Mine, posForMine);
             }
-            return new ICommand[0];
         }
 
-        public ICommand[] MoveUnits()
+        public void MoveUnits()
         {
             Position target = IceAndFire.game.OpponentHq;
 
-            if (IceAndFire.game.Map[target.X, target.Y].IsOwned)
-                return new ICommand[0];
+            if (IceAndFire.game.Map[target.X, target.Y].IsOwned) return;
 
-            var cmd = new List<ICommand>();
             var workers = IceAndFire.game.MyUnits.Where(u => u.Level == 1).ToArray();
             foreach (var unit in workers)
             {
                 var om = GetOccupationMove(unit)?.Position ?? target;
-                cmd.Add(Commands.Move(unit.Id, om));
+                Commands.Move(unit.Id, om);
                 IceAndFire.game.Map[om.X, om.Y].Owner = IceAndFire.ME;
             }
             var solders = IceAndFire.game.MyUnits.Where(u => u.Level > 1).ToArray();
@@ -44,10 +41,8 @@ namespace IceAndFire
                 var path = GameMap.FindPathInternal(p => !IceAndFire.game.Map[p.X, p.Y].IsWall && 
                                                                      IceAndFire.game.Map[p.X, p.Y]?.Unit?.IsOwned != true,
                     solder.Position, target);
-                cmd.Add(Commands.Move(solder.Id, path[0]));
+                Commands.Move(solder.Id, path[0]);
             }
-
-            return cmd.ToArray();
         }
 
         public Tile GetOccupationMove(Unit unit)
@@ -61,23 +56,18 @@ namespace IceAndFire
             return next;
         }
 
-        public ICommand[] TrainUnits()
+        public void TrainUnits()
         {
             var placesForTrain = IceAndFire.game.PlacesForTrain();
-            var trainKiller = TrainKiller(placesForTrain);
-            if (trainKiller != null)
-                return new []{ trainKiller };
-            var trainSolder = TrainSolder(placesForTrain);
-            if (trainSolder != null)
-                return new[] { trainSolder };
-            var trainSlave = TrainSlave(placesForTrain, 5);
-            if (trainSlave != null)
-                return new[]{ trainSlave };
-
-            return new ICommand[0];
+            if (TrainKiller(placesForTrain))
+                return;
+            if (TrainSolder(placesForTrain))
+                return;
+            if (TrainSlave(placesForTrain, 5))
+                return;
         }
 
-        public ICommand TrainBase(Tile[] places, Func<Tile[], Tile> getPlace, int unitLevel, int unitLimit)
+        public bool TrainBase(Tile[] places, Func<Tile[], Tile> getPlace, int unitLevel, int unitLimit)
         {
             var defaultPlace = IceAndFire.game.Area4(IceAndFire.game.MyHq).First();
             var placeForTrain = getPlace(places) ?? defaultPlace;
@@ -88,13 +78,14 @@ namespace IceAndFire
                 (IceAndFire.game.MyIncome >= IceAndFire.game.MyUpkeep + Unit.UpkeepCosts[unitLevel]) &&
                 IceAndFire.game.MyUnits.Count(u => u.Level == unitLevel) < unitLimit)
             {
-                return Commands.Train(unitLevel, placeForTrain.Position);
+                Commands.Train(unitLevel, placeForTrain.Position);
+                return true;
             }
 
-            return null;
+            return false;
         }
         
-        public ICommand TrainSlave(Tile[] places, int limit)
+        public bool TrainSlave(Tile[] places, int limit)
         {
             return TrainBase(places, ps => ps
                     .OrderByDescending(p => IceAndFire.game.Area4(p)
@@ -104,7 +95,7 @@ namespace IceAndFire
                 limit);
         }
 
-        public ICommand TrainSolder(Tile[] places)
+        public bool TrainSolder(Tile[] places)
         {
             return TrainBase(places, ps => ps.OrderBy(c => IceAndFire.game.OpponentHq.MDistanceTo(c.Position))
                     .FirstOrDefault(),
@@ -112,7 +103,7 @@ namespace IceAndFire
                 4);
         }
 
-        public ICommand TrainKiller(Tile[] places)
+        public bool TrainKiller(Tile[] places)
         {
             return TrainBase(places, ps => ps.OrderBy(c => IceAndFire.game.OpponentHq.MDistanceTo(c.Position))
                     .FirstOrDefault(),

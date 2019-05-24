@@ -2,8 +2,8 @@
 {
     public static class Commands
     {
-        public static MoveCommand Move(int id, Position position) => new MoveCommand(id, position);
-        public static BuildCommand Build(BuildingType type, Position position) => new BuildCommand(type, position);
-        public static TrainCommand Train(int level, Position position) => new TrainCommand(level, position);
+        public static void Move(int id, Position position) => new MoveCommand(id, position).Apply(IceAndFire.gameEngine);
+        public static void Build(BuildingType type, Position position) => new BuildCommand(type, position).Apply(IceAndFire.gameEngine);
+        public static void Train(int level, Position position) => new TrainCommand(level, position).Apply(IceAndFire.gameEngine);
     }
 }
