@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace IceAndFire
 {
@@ -78,10 +76,10 @@ namespace IceAndFire
 
             // --------------------------------------
 
-            gameMap.ActualGold = int.Parse(Console.ReadLine());
-            gameMap.MyIncome = int.Parse(Console.ReadLine());
-            gameMap.OpponentGold = int.Parse(Console.ReadLine());
-            gameMap.OpponentIncome = int.Parse(Console.ReadLine());
+            gameMap.Me.Gold = int.Parse(Console.ReadLine());
+            gameMap.Me.Income = int.Parse(Console.ReadLine());
+            gameMap.Opponent.Gold = int.Parse(Console.ReadLine());
+            gameMap.Opponent.Income = int.Parse(Console.ReadLine());
 
             // Read Map
             for (var y = 0; y < GameMap.HEIGHT; y++)
@@ -140,12 +138,14 @@ namespace IceAndFire
                 gameMap.Units.Add(unit);
                 gameMap.Map[unit.X, unit.Y].Unit = unit;
             }
-            gameMap.ActuaUpkeep = gameMap.MyUnits.Sum(u => u.Upkeep);
+            gameMap.Me.Upkeep = gameMap.MyUnits.Sum(u => u.Upkeep);
 
             // --------------------------------
 
             // Get Team
-            gameMap.MyTeam = gameMap.Buildings.Find(b => b.IsHq && b.IsOwned).Position == (0, 0) ? Team.Fire : Team.Ice;
+            var meIsFire = gameMap.Map[0, 0].IsOwned;
+            gameMap.Me.Team = meIsFire ? Team.Fire : Team.Ice;
+            gameMap.Opponent.Team = meIsFire ? Team.Ice : Team.Fire;
 
             // Usefull for symmetric AI
             if (gameMap.MyTeam == Team.Ice)

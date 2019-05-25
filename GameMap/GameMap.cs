@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
-using System.Reflection;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 
@@ -14,19 +13,22 @@ namespace IceAndFire
         public const int WIDTH = 12;
         public const int HEIGHT = 12;
 
-        public Team MyTeam;
+        public Team MyTeam => Me.Team;
         public int MyGold => ActualGold - HoldGold;
-        public int ActualGold;
-        public int ActuaUpkeep;
+        public int MyUpkeep => ActuaUpkeep - HoldUpkeep;
+        public int MyIncome => Me.Income;
+        public int ActualGold => Me.Gold;
+        public int ActuaUpkeep => Me.Upkeep;
+        public int OpponentGold => Opponent.Gold;
+        public int OpponentIncome => Opponent.Income;
+
         public int HoldGold;
         public int HoldUpkeep;
-        public int MyIncome;
-        public int MyUpkeep => ActuaUpkeep - HoldUpkeep;
 
-        public int OpponentIncome;
-        public int OpponentGold;
 
         public readonly Tile[,] Map = new Tile[WIDTH, WIDTH];
+        public readonly PlayerState Me = new PlayerState();
+        public readonly PlayerState Opponent = new PlayerState();
 
         public readonly List<Building> Buildings = new List<Building>();
         public List<Unit> Units = new List<Unit>();
