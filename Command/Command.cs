@@ -11,5 +11,10 @@
 
         protected abstract string MakeCmd();
         protected abstract void ChangeMap(GameMap map);
+
+        public override string ToString()
+        {
+            return MakeCmd();
+        }
     }
 }

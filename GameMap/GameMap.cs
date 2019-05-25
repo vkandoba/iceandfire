@@ -47,7 +47,7 @@ namespace IceAndFire
         public Tile[] PlacesForTrain(int level = 1)
         {
             var territory = MyPositions.Concat(MyPositions.SelectMany(this.Area4)).Distinct();
-            return territory.Where(t => AllowTrain(t, level)).ToArray();
+            return territory.Where(t => AllowMove(t, level)).ToArray();
         }
 
         public Tile[] PlacesForTower()
@@ -55,7 +55,7 @@ namespace IceAndFire
             return MyPositions.Where(AllowBuilldTower).ToArray();
         }
 
-        private bool AllowTrain(Tile tile, int level = 1)
+        public bool AllowMove(Tile tile, int level = 1)
         {
             return !(HoldPositions.Contains(tile.Position) ||
                      (tile.Building != null && tile.IsOwned) ||
