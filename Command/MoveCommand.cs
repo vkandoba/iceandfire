@@ -18,4 +18,13 @@
             map.HoldPositions.Add(pos);
         }
     }
+
+    public class WaitCommand : Command
+    {
+        protected override string MakeCmd() => $"WAIT";
+
+        protected override void MakeHolds(GameMap map)
+        {
+        }
+    }
 }
