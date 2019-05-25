@@ -26,9 +26,10 @@ namespace IceAndFire
         public int HoldUpkeep;
 
 
+        public PlayerState Me = new PlayerState();
+        public PlayerState Opponent = new PlayerState();
+
         public readonly Tile[,] Map = new Tile[WIDTH, WIDTH];
-        public readonly PlayerState Me = new PlayerState();
-        public readonly PlayerState Opponent = new PlayerState();
 
         public readonly List<Building> Buildings = new List<Building>();
         public List<Unit> Units = new List<Unit>();
@@ -78,6 +79,8 @@ namespace IceAndFire
         public string ShowMap()
         {
             var str = new StringBuilder();
+            str.AppendLine(Me.ToString());
+            str.AppendLine(Opponent.ToString());
             for (int y = 0; y < HEIGHT; y++)
             {
                 for (int x = 0; x < WIDTH; x++)

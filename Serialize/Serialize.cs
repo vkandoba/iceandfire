@@ -7,6 +7,14 @@ namespace IceAndFire
 {
     public static class Serialize
     {
+        [Serializable]
+        private class GameData
+        {
+            public Tile[][] MapCopy;
+            public PlayerState MeState;
+            public PlayerState OpState;
+        }
+
         private static BinaryFormatter serializer = new BinaryFormatter();
 
         public static string Save(GameMap gameMap)
@@ -21,10 +29,12 @@ namespace IceAndFire
                 }
             }
 
+            var data = new GameData {MapCopy = copy, MeState = gameMap.Me, OpState = gameMap.Opponent};
+
             byte[] bytes = null;
             using (var memory = new MemoryStream())
             {
-                serializer.Serialize(memory, copy);
+                serializer.Serialize(memory, data);
                 bytes = memory.ToArray();
             }
 
@@ -44,7 +54,8 @@ namespace IceAndFire
             {
                 using (var gzip = new GZipStream(memory, CompressionMode.Decompress))
                 {
-                    var copy = (Tile[][])serializer.Deserialize(gzip);
+                    var data = (GameData)serializer.Deserialize(gzip);
+                    var copy = data.MapCopy;
                     for (int x = 0; x < GameMap.WIDTH; x++)
                     {
                         for (int y = 0; y < GameMap.HEIGHT; y++)
@@ -52,6 +63,9 @@ namespace IceAndFire
                             gameMap.Map[x, y] = copy[x][y];
                         }
                     }
+
+                    gameMap.Me = data.MeState;
+                    gameMap.Opponent = data.OpState;
                 }
             }
 
