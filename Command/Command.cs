@@ -16,6 +16,8 @@
             ChangeMap(gameMap);
         }
 
+        public abstract void Unapply(GameMap game);
+
         protected abstract string MakeCmd();
         protected abstract void ChangeMap(GameMap map);
 

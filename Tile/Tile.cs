@@ -23,7 +23,7 @@ namespace IceAndFire
         public bool IsOpponent => Owner == Owner.OPPONENT;
         public bool IsNeutral => Owner == Owner.NEUTRAL;
 
-        public override string ToString() => $"({X},{Y})";
+        public override string ToString() => $"({X},{Y}, {ToChar()})";
 
         public string ToChar()
         {

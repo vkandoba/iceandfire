@@ -33,10 +33,26 @@ namespace IceAndFire
 
         public List<Position> MineSpots = new List<Position>();
 
+        private int myGoldChange;
+        private int oppenentGoldChange;
+
         public void UpTurn()
         {
-            Me.Gold += Me.Income - Me.Upkeep;
-            Opponent.Gold += Opponent.Income - Opponent.Upkeep;
+            myGoldChange = Me.Income - Me.Upkeep;
+            oppenentGoldChange = Opponent.Income - Opponent.Upkeep;
+            Me.Gold += myGoldChange;
+            Opponent.Gold += oppenentGoldChange;
+
+            foreach (var unit in Units.Where(u => u.IsTouch))
+            {
+                unit.IsTouch = false;
+            }
+        }
+
+        public void DownTurn()
+        {
+            Me.Gold -= myGoldChange;
+            Opponent.Gold -= oppenentGoldChange;
 
             foreach (var unit in Units.Where(u => u.IsTouch))
             {
@@ -61,13 +77,15 @@ namespace IceAndFire
             return around.Where(p => p.IsOwned).Any();
         }
 
-        public void MarkPositionIsMe(Position pos)
+        public Tile UpdateTile(Tile tile)
         {
-            var tile = Map[pos.X, pos.Y];
-            tile.Owner = Owner.ME;
-            tile.Active = true;
-            if (!MyPositions.Contains(tile))
+            if (tile.IsOwned && !MyPositions.Contains(tile))
                 MyPositions.Add(tile);
+
+            if (!tile.IsOwned)
+                MyPositions.Remove(tile);
+
+            return tile;
         }
 
         public Entity DestroyOp(Position pos)
@@ -89,6 +107,30 @@ namespace IceAndFire
             }
 
             return null;
+        }
+
+        public bool UnDestroyOp(Position pos, Entity destroed)
+        {
+            if (destroed == null)
+                return false;
+
+            var tile = Map[pos.X, pos.Y];
+
+            if (destroed is Unit unit)
+            {
+                Units.Add(unit);
+                tile.Unit = unit;
+                return true;
+            }
+
+            if (destroed is Building building)
+            {
+                Buildings.Add(building);
+                tile.Building = building;
+                return true;
+            }
+
+            return false;
         }
 
 

@@ -3,6 +3,8 @@
     public class BuildCommand : BaseCommand
     {
         private readonly BuildingType type;
+        private Building building = null;
+        private int cost;
 
         public BuildCommand(BuildingType type, Position pos) : base(pos)
         {
@@ -13,13 +15,25 @@
 
         protected override void ChangeMap(GameMap map)
         {
-            map.MarkPositionIsMe(target);
+            base.ChangeMap(map);
 
-            var building = new Building {Owner = Owner.ME, Position = target, Type = type};
+            building = new Building {Owner = Owner.ME, Position = target, Type = type};
+            map.Map[target.X, target.Y].Building = building;
             map.Buildings.Add(building);
 
-            var cost = type == BuildingType.Mine ? IceAndFire.MINE_BUILD_COST : IceAndFire.TOWER_BUILD_COST;
+            cost = type == BuildingType.Mine ? IceAndFire.MINE_BUILD_COST : IceAndFire.TOWER_BUILD_COST;
             IceAndFire.game.Me.Gold -= cost;
+        }
+
+        public override void Unapply(GameMap game)
+        {
+            game.Map[target.X, target.Y].Building = null;
+            game.Buildings.Remove(building);
+            building = null;
+
+            base.Unapply(game);
+
+            IceAndFire.game.Me.Gold += cost;
         }
     }
 }
