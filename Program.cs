@@ -111,12 +111,6 @@ namespace IceAndFire
 
                     if (cell.IsOwned && cell.Active)
                         gameMap.MyPositions.Add(cell);
-                    else if (cell.IsOpponent && cell.Active)
-                        gameMap.OpPositions.Add(cell);
-                    else if (!cell.IsWall)
-                    {
-                        gameMap.NeutralPositions.Add(cell);
-                    }
                 }
             }
 
@@ -159,14 +153,6 @@ namespace IceAndFire
             var meIsFire = gameMap.Map[0, 0].IsOwned;
             gameMap.Me.Team = meIsFire ? Team.Fire : Team.Ice;
             gameMap.Opponent.Team = meIsFire ? Team.Ice : Team.Fire;
-
-            // Usefull for symmetric AI
-            if (gameMap.MyTeam == Team.Ice)
-            {
-                gameMap.MyPositions.Reverse();
-                gameMap.OpPositions.Reverse();
-                gameMap.NeutralPositions.Reverse();
-            }
 
             // --------------------------------
 

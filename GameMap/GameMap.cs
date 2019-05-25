@@ -30,8 +30,6 @@ namespace IceAndFire
         public HashSet<Unit> Units = new HashSet<Unit>();
 
         public HashSet<Tile> MyPositions = new HashSet<Tile>();
-        public HashSet<Tile> OpPositions = new HashSet<Tile>();
-        public HashSet<Tile> NeutralPositions = new HashSet<Tile>();
 
         public List<Position> MineSpots = new List<Position>();
 
@@ -70,8 +68,6 @@ namespace IceAndFire
             tile.Active = true;
             if (!MyPositions.Contains(tile))
                 MyPositions.Add(tile);
-            NeutralPositions.Remove(tile);
-            OpPositions.Remove(tile);
         }
 
         public Entity DestroyOp(Position pos)
@@ -102,8 +98,6 @@ namespace IceAndFire
             Buildings.Clear();
             
             MyPositions.Clear();
-            OpPositions.Clear();
-            NeutralPositions.Clear();
         }
     }
 }

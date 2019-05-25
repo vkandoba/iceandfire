@@ -68,10 +68,6 @@ namespace IceAndFire
                             {
                                 if (tile.IsOwned)
                                     gameMap.MyPositions.Add(tile);
-                                if (tile.IsOpponent)
-                                    gameMap.OpPositions.Add(tile);
-                                if (tile.IsNeutral)
-                                    gameMap.NeutralPositions.Add(tile);
 
                                 if (tile.Unit != null)
                                     gameMap.Units.Add(tile.Unit);
