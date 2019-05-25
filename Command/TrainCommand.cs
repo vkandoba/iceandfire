@@ -16,8 +16,8 @@ namespace IceAndFire
 
         protected override void ChangeMap(GameMap map)
         {
-            DestroyOp(map, target);
-            base.ChangeMap(map);
+            map.DestroyOp(target);
+            map.MarkPositionIsMe(target);
 
             map.Me.Gold -= Unit.TrainCosts[level];
             map.Me.Upkeep += Unit.UpkeepCosts[level];

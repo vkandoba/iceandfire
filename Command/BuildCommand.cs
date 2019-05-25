@@ -13,7 +13,7 @@
 
         protected override void ChangeMap(GameMap map)
         {
-            base.ChangeMap(map);
+            map.MarkPositionIsMe(target);
 
             var building = new Building {Owner = Owner.ME, Position = target, Type = type};
             map.Buildings.Add(building);

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
 namespace IceAndFire
 {
@@ -61,6 +62,39 @@ namespace IceAndFire
             var around = OpponentUnits.SelectMany(op => this.Area8(op.Position));
             return around.Where(p => p.IsOwned).Any();
         }
+
+        public void MarkPositionIsMe(Position pos)
+        {
+            var tile = Map[pos.X, pos.Y];
+            tile.Owner = Owner.ME;
+            tile.Active = true;
+            if (!MyPositions.Contains(tile))
+                MyPositions.Add(tile);
+            NeutralPositions.Remove(tile);
+            OpPositions.Remove(tile);
+        }
+
+        public Entity DestroyOp(Position pos)
+        {
+            var tile = Map[pos.X, pos.Y];
+            if (tile.Unit != null)
+            {
+                var opUnit = tile.Unit;
+                Units.Remove(opUnit);
+                tile.Unit = null;
+                return opUnit;
+            }
+            if (tile.Building != null)
+            {
+                var opBuilding = tile.Building;
+                Buildings.Remove(opBuilding);
+                tile.Building = null;
+                return opBuilding;
+            }
+
+            return null;
+        }
+
 
         public void Clear()
         {

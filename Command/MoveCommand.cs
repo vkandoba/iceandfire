@@ -13,8 +13,8 @@
 
         protected override void ChangeMap(GameMap map)
         {
-            DestroyOp(map, target);
-            base.ChangeMap(map);
+            map.DestroyOp(target);
+            map.MarkPositionIsMe(target);
 
             unit.IsTouch = true;
             var old = unit.Position;
