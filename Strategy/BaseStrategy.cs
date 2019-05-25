@@ -47,7 +47,7 @@ namespace IceAndFire
         public Tile GetOccupationMove(Unit unit)
         {
             var ns = IceAndFire.game.Area4(unit.Position);
-            var next = ns.Where(c => c.Unit == null && !IceAndFire.game.HoldPositions.Contains(c.Position))
+            var next = ns.Where(c => c.Unit == null)
                          .OrderByDescending(p => IceAndFire.game.Area8(p)
                                                     .Where(c => !c.IsWall && c.IsNeutral)
                                                     .Count())

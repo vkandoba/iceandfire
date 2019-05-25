@@ -11,16 +11,11 @@ namespace IceAndFire
         public const int HEIGHT = 12;
 
         public Team MyTeam => Me.Team;
-        public int MyGold => ActualGold - HoldGold;
-        public int MyUpkeep => ActuaUpkeep - HoldUpkeep;
+        public int MyGold => Me.Gold;
+        public int MyUpkeep => Me.Upkeep;
         public int MyIncome => Me.Income;
-        public int ActualGold => Me.Gold;
-        public int ActuaUpkeep => Me.Upkeep;
         public int OpponentGold => Opponent.Gold;
         public int OpponentIncome => Opponent.Income;
-
-        public int HoldGold;
-        public int HoldUpkeep;
 
         public PlayerState Me = new PlayerState();
         public PlayerState Opponent = new PlayerState();
@@ -38,8 +33,6 @@ namespace IceAndFire
         public List<Tile> MyPositions = new List<Tile>();
         public List<Tile> OpPositions = new List<Tile>();
         public List<Tile> NeutralPositions = new List<Tile>();
-        public HashSet<Position> HoldPositions = new HashSet<Position>();
-
 
         public List<Position> MineSpots = new List<Position>();
 
@@ -56,14 +49,13 @@ namespace IceAndFire
 
         public bool AllowMove(Tile tile, int level = 1)
         {
-            return !(HoldPositions.Contains(tile.Position) ||
-                     (tile.Building != null && tile.IsOwned) ||
-                     tile.Unit?.IsOwned == true || (tile.Unit?.Level ?? 0) >= level);
+            return !((tile.Building != null && tile.IsOwned) ||
+                    tile.Unit?.IsOwned == true || (tile.Unit?.Level ?? 0) >= level);
         }
 
         private bool AllowBuilldTower(Tile tile)
         {
-            return tile.Unit == null && tile.Building == null && !tile.HasMineSpot && !HoldPositions.Contains(tile.Position);
+            return tile.Unit == null && tile.Building == null && !tile.HasMineSpot;
         }
 
         public bool HasMenace()
@@ -111,10 +103,6 @@ namespace IceAndFire
             MyPositions.Clear();
             OpPositions.Clear();
             NeutralPositions.Clear();
-
-            HoldPositions.Clear();
-            HoldGold = 0;
-            HoldUpkeep = 0;
         }
 
         public static Position[] FindPathInternal(Func<Position, bool> isFree, 

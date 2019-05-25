@@ -13,8 +13,12 @@
 
         protected override void ChangeMap(GameMap map)
         {
+            DestroyOp(map, target);
             base.ChangeMap(map);
-            map.HoldPositions.Add(target);
+
+            var old = unit.Position;
+            map.Map[old.X, old.Y].Unit = null;
+            unit.Position = target;
         }
 
         public override string ToString() => $"{unit.Position} -> {target}";

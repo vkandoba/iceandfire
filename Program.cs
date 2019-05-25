@@ -164,7 +164,7 @@ namespace IceAndFire
         public static void Debug(GameMap gameMap)
         {
             Console.Error.WriteLine($"My team: {gameMap.MyTeam}");
-            Console.Error.WriteLine($"My gold: {gameMap.ActualGold} (+{gameMap.MyIncome})");
+            Console.Error.WriteLine($"My gold: {gameMap.Me.Gold} (+{gameMap.MyIncome})");
             Console.Error.WriteLine($"Opponent gold: {gameMap.OpponentGold} (+{gameMap.OpponentIncome})");
 
             Console.Error.WriteLine("=====");

@@ -1,8 +1,11 @@
-﻿namespace IceAndFire
+﻿using System;
+
+namespace IceAndFire
 {
     public class TrainCommand : BaseCommand
     {
         private readonly int level;
+        private Random rand = new Random();
 
         public TrainCommand(int level, Position pos) : base(pos)
         {
@@ -13,10 +16,13 @@
 
         protected override void ChangeMap(GameMap map)
         {
+            DestroyOp(map, target);
             base.ChangeMap(map);
-            map.HoldGold += Unit.TrainCosts[level];
-            map.HoldUpkeep += Unit.UpkeepCosts[level];
-            map.HoldPositions.Add(target);
+
+            map.Me.Gold -= Unit.TrainCosts[level];
+            map.Me.Upkeep += Unit.UpkeepCosts[level];
+            var unit = new Unit {Id = rand.Next(50, 100), Level = level, Owner = Owner.ME, Position = target};
+            map.Map[target.X, target.Y].Unit = unit;
         }
 
         public override string ToString() => $"{level} -> {target}";
