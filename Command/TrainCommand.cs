@@ -18,5 +18,7 @@
             map.HoldUpkeep += Unit.UpkeepCosts[level];
             map.HoldPositions.Add(target);
         }
+
+        public override string ToString() => $"{level} -> {target}";
     }
 }

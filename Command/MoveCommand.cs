@@ -2,19 +2,21 @@
 {
     public class MoveCommand : BaseCommand
     {
-        private readonly int id;
+        private readonly Unit unit;
 
-        public MoveCommand(int id, Position pos) : base(pos)
+        public MoveCommand(Unit unit, Position target) : base(target)
         {
-            this.id = id;
+            this.unit = unit;
         }
 
-        protected override string MakeCmd() => $"MOVE {id} {target.X} {target.Y}";
+        protected override string MakeCmd() => $"MOVE {unit.Id} {target.X} {target.Y}";
 
         protected override void ChangeMap(GameMap map)
         {
             base.ChangeMap(map);
             map.HoldPositions.Add(target);
         }
+
+        public override string ToString() => $"{unit.Position} -> {target}";
     }
 }

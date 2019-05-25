@@ -63,16 +63,7 @@ namespace IceAndFire
 
         public static void ReadAndUpdateMap(GameMap gameMap, bool printDebug = false)
         {
-            gameMap.Units.Clear();
-            gameMap.Buildings.Clear();
-
-            gameMap.MyPositions.Clear();
-            gameMap.OpponentPositions.Clear();
-            gameMap.NeutralPositions.Clear();
-            gameMap.HoldPositions.Clear();
-            gameMap.HoldGold = 0;
-            gameMap.HoldUpkeep = 0;
-
+            gameMap.Clear();
 
             // --------------------------------------
 
@@ -100,7 +91,7 @@ namespace IceAndFire
                     if (cell.IsOwned && cell.Active)
                         gameMap.MyPositions.Add(cell);
                     else if (cell.IsOpponent && cell.Active)
-                        gameMap.OpponentPositions.Add(cell);
+                        gameMap.OpPositions.Add(cell);
                     else if (!cell.IsWall)
                     {
                         gameMap.NeutralPositions.Add(cell);
@@ -152,7 +143,7 @@ namespace IceAndFire
             if (gameMap.MyTeam == Team.Ice)
             {
                 gameMap.MyPositions.Reverse();
-                gameMap.OpponentPositions.Reverse();
+                gameMap.OpPositions.Reverse();
                 gameMap.NeutralPositions.Reverse();
             }
 

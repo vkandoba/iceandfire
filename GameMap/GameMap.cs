@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using System.IO.Compression;
 using System.Linq;
-using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 
 namespace IceAndFire
@@ -25,25 +22,24 @@ namespace IceAndFire
         public int HoldGold;
         public int HoldUpkeep;
 
-
         public PlayerState Me = new PlayerState();
         public PlayerState Opponent = new PlayerState();
 
         public readonly Tile[,] Map = new Tile[WIDTH, WIDTH];
-
-        public readonly List<Building> Buildings = new List<Building>();
-        public List<Unit> Units = new List<Unit>();
-
+        
         public Position MyHq => MyTeam == Team.Fire ? (0, 0) : (11, 11);
         public Position OpponentHq => MyTeam == Team.Fire ? (11, 11) : (0, 0);
+        public List<Unit> MyUnits => Units.Where(u => u.IsOwned).ToList();
+        public List<Unit> OpponentUnits => Units.Where(u => u.IsOpponent).ToList();
+
+        public List<Building> Buildings = new List<Building>();
+        public List<Unit> Units = new List<Unit>();
 
         public List<Tile> MyPositions = new List<Tile>();
-        public List<Tile> OpponentPositions = new List<Tile>();
+        public List<Tile> OpPositions = new List<Tile>();
         public List<Tile> NeutralPositions = new List<Tile>();
         public HashSet<Position> HoldPositions = new HashSet<Position>();
 
-        public List<Unit> MyUnits => Units.Where(u => u.IsOwned).ToList();
-        public List<Unit> OpponentUnits => Units.Where(u => u.IsOpponent).ToList();
 
         public List<Position> MineSpots = new List<Position>();
 
@@ -81,8 +77,18 @@ namespace IceAndFire
             var str = new StringBuilder();
             str.AppendLine(Me.ToString());
             str.AppendLine(Opponent.ToString());
+            str.AppendLine();
+            str.Append($"   ");
             for (int y = 0; y < HEIGHT; y++)
             {
+                str.Append($"{y} ");
+            }
+            str.AppendLine();
+            str.AppendLine();
+
+            for (int y = 0; y < HEIGHT; y++)
+            {
+                str.Append($"{y.ToString().PadRight(3)}");
                 for (int x = 0; x < WIDTH; x++)
                 {
                     str.Append($"{Map[x, y].ToChar()} ");
@@ -92,6 +98,20 @@ namespace IceAndFire
             }
 
             return str.ToString();
+        }
+
+        public void Clear()
+        {
+            Units.Clear();
+            Buildings.Clear();
+            
+            MyPositions.Clear();
+            OpPositions.Clear();
+            NeutralPositions.Clear();
+
+            HoldPositions.Clear();
+            HoldGold = 0;
+            HoldUpkeep = 0;
         }
 
         public static Position[] FindPathInternal(Func<Position, bool> isFree, 

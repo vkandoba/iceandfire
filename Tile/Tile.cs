@@ -36,10 +36,10 @@ namespace IceAndFire
             if (Building?.IsTower == true) return "t";
             if (Building?.IsMine == true) return "m";
 
-            if (HasMineSpot) return "g";
-
             if (Unit != null)
-                return Unit.Level.ToString();
+                return "u";
+
+            if (HasMineSpot) return "g";
 
             return "?";
         }

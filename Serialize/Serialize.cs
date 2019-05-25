@@ -56,16 +56,40 @@ namespace IceAndFire
                 {
                     var data = (GameData)serializer.Deserialize(gzip);
                     var copy = data.MapCopy;
+                    gameMap.Clear();
                     for (int x = 0; x < GameMap.WIDTH; x++)
                     {
                         for (int y = 0; y < GameMap.HEIGHT; y++)
                         {
-                            gameMap.Map[x, y] = copy[x][y];
+                            var tile = copy[x][y];
+                            gameMap.Map[x, y] = tile;
+                            if (!tile.IsWall)
+                            {
+                                if (tile.IsOwned)
+                                    gameMap.MyPositions.Add(tile);
+                                if (tile.IsOpponent)
+                                    gameMap.OpPositions.Add(tile);
+                                if (tile.IsNeutral)
+                                    gameMap.NeutralPositions.Add(tile);
+
+                                if (tile.Unit != null)
+                                    gameMap.Units.Add(tile.Unit);
+                                if (tile.Building != null)
+                                    gameMap.Buildings.Add(tile.Building);
+                            }
                         }
                     }
 
                     gameMap.Me = data.MeState;
                     gameMap.Opponent = data.OpState;
+
+                    // Usefull for symmetric AI
+                    if (data.MeState.Team == Team.Ice)
+                    {
+                        gameMap.MyPositions.Reverse();
+                        gameMap.OpPositions.Reverse();
+                        gameMap.NeutralPositions.Reverse();
+                    }
                 }
             }
 
