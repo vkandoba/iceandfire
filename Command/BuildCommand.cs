@@ -16,11 +16,10 @@
             base.ChangeMap(map);
 
             var building = new Building {Owner = Owner.ME, Position = target, Type = type};
-            if (type == BuildingType.Tower)
-                map.Buildings.Add(building);
+            map.Buildings.Add(building);
 
             var cost = type == BuildingType.Mine ? IceAndFire.MINE_BUILD_COST : IceAndFire.TOWER_BUILD_COST;
-            IceAndFire.game.Me.Gold += cost;
+            IceAndFire.game.Me.Gold -= cost;
         }
     }
 }

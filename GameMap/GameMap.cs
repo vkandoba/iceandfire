@@ -49,7 +49,7 @@ namespace IceAndFire
 
         public bool AllowMove(Tile tile, int level = 1)
         {
-            return !((tile.Building != null && tile.IsOwned) ||
+            return !((tile.Building?.IsTower == true && tile.IsOwned) ||
                     tile.Unit?.IsOwned == true || (tile.Unit?.Level ?? 0) >= level);
         }
 
