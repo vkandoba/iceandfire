@@ -10,10 +10,6 @@ namespace IceAndFire
 
         public static Game gameEngine;
 
-        public const int ME = 0;
-        public const int OPPONENT = 1;
-        public const int NEUTRAL = -1;
-
         public const int MINE_BUILD_COST = 30;
         public const int TOWER_BUILD_COST = 15;
 
@@ -84,7 +80,7 @@ namespace IceAndFire
                     var cell = gameMap.Map[x, y];
                     cell.IsWall = c == "#";
                     cell.Active = "OX".Contains(c);
-                    cell.Owner = c.ToLower() == "o" ? IceAndFire.ME : c.ToLower() == "x" ? IceAndFire.OPPONENT : IceAndFire.NEUTRAL;
+                    cell.Owner = c.ToLower() == "o" ? Owner.ME : c.ToLower() == "x" ? Owner.OPPONENT : Owner.NEUTRAL;
                     cell.HasMineSpot = gameMap.MineSpots.Count(spot => spot == (x, y)) > 0;
 
                     cell.Unit = null;
@@ -108,7 +104,7 @@ namespace IceAndFire
                 var inputs = Console.ReadLine().Split(' ');
                 var building = new Building
                 {
-                    Owner = int.Parse(inputs[0]),
+                    Owner = ParseOwner(inputs[0]),
                     Type = (BuildingType)int.Parse(inputs[1]),
                     Position = (int.Parse(inputs[2]), int.Parse(inputs[3]))
                 };
@@ -123,7 +119,7 @@ namespace IceAndFire
                 var inputs = Console.ReadLine().Split(' ');
                 var unit = new Unit
                 {
-                    Owner = int.Parse(inputs[0]),
+                    Owner = ParseOwner(inputs[0]),
                     Id = int.Parse(inputs[1]),
                     Level = int.Parse(inputs[2]),
                     Position = (int.Parse(inputs[3]), int.Parse(inputs[4]))
@@ -151,6 +147,13 @@ namespace IceAndFire
             // Debug
             if (printDebug)
                 Debug(gameMap);
+        }
+
+        private static Owner ParseOwner(string input)
+        {
+            var number = int.Parse(input);
+            var owner = number == -1 ? Owner.NEUTRAL : (number == 0 ? Owner.ME : Owner.OPPONENT); 
+            return owner;
         }
 
         public static void Debug(GameMap gameMap)

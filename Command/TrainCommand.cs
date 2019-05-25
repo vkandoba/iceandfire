@@ -13,8 +13,9 @@
 
         protected override string MakeCmd() => $"TRAIN {level} {pos.X} {pos.Y}";
 
-        protected override void MakeHolds(GameMap map)
+        protected override void ChangeMap(GameMap map)
         {
+            MarkPosition(map, pos);
             map.HoldGold += Unit.TrainCosts[level];
             map.HoldUpkeep += Unit.UpkeepCosts[level];
             map.HoldPositions.Add(pos);

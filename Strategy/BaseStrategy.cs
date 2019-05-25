@@ -33,7 +33,6 @@ namespace IceAndFire
             {
                 var om = GetOccupationMove(unit)?.Position ?? target;
                 Commands.Move(unit.Id, om);
-                IceAndFire.game.Map[om.X, om.Y].Owner = IceAndFire.ME;
             }
             var solders = IceAndFire.game.MyUnits.Where(u => u.Level > 1).ToArray();
             foreach (var solder in solders)

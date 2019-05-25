@@ -13,9 +13,10 @@
 
         protected override string MakeCmd() => $"MOVE {id} {pos.X} {pos.Y}";
 
-        protected override void MakeHolds(GameMap map)
+        protected override void ChangeMap(GameMap map)
         {
             map.HoldPositions.Add(pos);
+            MarkPosition(map, pos);
         }
     }
 
@@ -23,7 +24,7 @@
     {
         protected override string MakeCmd() => $"WAIT";
 
-        protected override void MakeHolds(GameMap map)
+        protected override void ChangeMap(GameMap map)
         {
         }
     }

@@ -2,11 +2,11 @@
 {
     public class Entity
     {
-        public int Owner;
+        public Owner Owner; 
         public Position Position;
 
-        public bool IsOwned => Owner == IceAndFire.ME;
-        public bool IsOpponent => Owner == IceAndFire.OPPONENT;
+        public bool IsOwned => Owner == Owner.ME;
+        public bool IsOpponent => Owner == Owner.OPPONENT;
 
         public int X => Position.X;
         public int Y => Position.Y;
