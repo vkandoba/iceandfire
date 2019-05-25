@@ -12,7 +12,7 @@ namespace IceAndFire
             {
                 foreach (var tile in map.Area4(unit.Position))
                 {
-                    if (map.AllowMove(tile))
+                    if (tile.AllowMove())
                         yield return new MoveCommand(unit, tile.Position);
                 }
             }

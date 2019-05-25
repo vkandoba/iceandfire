@@ -37,7 +37,7 @@ namespace IceAndFire
             var solders = IceAndFire.game.MyUnits.Where(u => u.Level > 1).ToArray();
             foreach (var solder in solders)
             {
-                var path = GameMap.FindPathInternal(p => !IceAndFire.game.Map[p.X, p.Y].IsWall && 
+                var path = Geometry.FindPathInternal(p => !IceAndFire.game.Map[p.X, p.Y].IsWall && 
                                                                      IceAndFire.game.Map[p.X, p.Y]?.Unit?.IsOwned != true,
                     solder.Position, target);
                 Commands.Move(solder, path[0]);
