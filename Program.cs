@@ -36,7 +36,7 @@ namespace IceAndFire
 
         public static void DebugMap(GameMap gameMap)
         {
-            var serializedGame = gameMap.Serialize();
+            var serializedGame = Serialize.Save(gameMap);
             Console.Error.WriteLine($"serialized length:{serializedGame.Length}");
             Console.Error.WriteLine(serializedGame);
             Console.Error.WriteLine(game.ShowMap());
