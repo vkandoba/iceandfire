@@ -72,8 +72,10 @@ namespace IceAndFire
             return around.Where(p => p.IsOwned).Any();
         }
 
-        public string ShowMap()
+        public string ShowMap(IEnumerable<Position> marks = null)
         {
+            var m = new HashSet<Position>(marks ?? new Position[0]);
+
             var str = new StringBuilder();
             str.AppendLine(Me.ToString());
             str.AppendLine(Opponent.ToString());
@@ -91,7 +93,8 @@ namespace IceAndFire
                 str.Append($"{y.ToString().PadRight(3)}");
                 for (int x = 0; x < WIDTH; x++)
                 {
-                    str.Append($"{Map[x, y].ToChar()} ");
+                    var c = !m.Contains(Map[x, y].Position) ? Map[x, y].ToChar() : "-";
+                    str.Append($"{c} ");
                 }
 
                 str.AppendLine();

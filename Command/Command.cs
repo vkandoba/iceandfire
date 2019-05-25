@@ -2,6 +2,8 @@
 {
     public abstract class Command : ICommand
     {
+        public abstract Position Target { get; }
+
         public void Apply(Game game)
         {
             var cmd = MakeCmd();
