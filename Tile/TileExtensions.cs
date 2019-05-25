@@ -4,7 +4,7 @@
     {
         public static bool AllowMove(this Tile tile, int level = 1)
         {
-            return !((tile.Building?.IsTower == true && tile.IsOwned) || tile.IsWall ||
+            return !((tile.Building != null && tile.IsOwned) || tile.IsWall ||
                      tile.Unit?.IsOwned == true || (tile.Unit?.Level ?? 0) >= level);
         }
 
