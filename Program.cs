@@ -139,6 +139,7 @@ namespace IceAndFire
                 gameMap.Map[unit.X, unit.Y].Unit = unit;
             }
             gameMap.Me.Upkeep = gameMap.MyUnits.Sum(u => u.Upkeep);
+            gameMap.Opponent.Upkeep = gameMap.OpponentUnits.Sum(u => u.Upkeep);
 
             // --------------------------------
 
