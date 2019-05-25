@@ -4,11 +4,16 @@
     {
         public abstract Position Target { get; }
 
-        public void Apply(Game game)
+        public void Execute(Game game)
         {
             var cmd = MakeCmd();
-            ChangeMap(game.Map);
+            Apply(game.Map);
             game.Output.Append($"{cmd};");
+        }
+
+        public void Apply(GameMap gameMap)
+        {
+            ChangeMap(gameMap);
         }
 
         protected abstract string MakeCmd();

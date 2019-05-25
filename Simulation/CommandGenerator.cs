@@ -8,7 +8,7 @@ namespace IceAndFire
         public static IEnumerable<ICommand> Moves(GameMap map)
         {
             var units = map.MyUnits;
-            foreach (var unit in units)
+            foreach (var unit in units.Where(u => !u.IsTouch))
             {
                 foreach (var tile in map.Area4(unit.Position))
                 {

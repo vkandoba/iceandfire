@@ -21,7 +21,7 @@ namespace IceAndFire
 
             map.Me.Gold -= Unit.TrainCosts[level];
             map.Me.Upkeep += Unit.UpkeepCosts[level];
-            var unit = new Unit {Id = rand.Next(50, 100), Level = level, Owner = Owner.ME, Position = target};
+            var unit = new Unit {Id = rand.Next(50, 100), IsTouch = true, Level = level, Owner = Owner.ME, Position = target};
             map.Units.Add(unit);
             map.Map[target.X, target.Y].Unit = unit;
         }

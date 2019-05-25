@@ -16,9 +16,11 @@
             DestroyOp(map, target);
             base.ChangeMap(map);
 
+            unit.IsTouch = true;
             var old = unit.Position;
             map.Map[old.X, old.Y].Unit = null;
             unit.Position = target;
+            map.Map[target.X, target.Y].Unit = unit;
         }
 
         public override string ToString() => $"{unit.Position} -> {target}";

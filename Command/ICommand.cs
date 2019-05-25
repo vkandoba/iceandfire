@@ -3,6 +3,7 @@
     public interface ICommand
     {
         Position Target { get; }
-        void Apply(Game game);
+        void Execute(Game game);
+        void Apply(GameMap game);
     }
 }

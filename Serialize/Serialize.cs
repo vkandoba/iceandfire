@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
 
 namespace IceAndFire
@@ -84,12 +85,12 @@ namespace IceAndFire
                     gameMap.Opponent = data.OpState;
 
                     // Usefull for symmetric AI
-                    if (data.MeState.Team == Team.Ice)
-                    {
-                        gameMap.MyPositions.Reverse();
-                        gameMap.OpPositions.Reverse();
-                        gameMap.NeutralPositions.Reverse();
-                    }
+                    //if (data.MeState.Team == Team.Ice)
+                    //{
+                    //    gameMap.MyPositions.Reverse();
+                    //    gameMap.OpPositions.Reverse();
+                    //    gameMap.NeutralPositions.Reverse();
+                    //}
                 }
             }
 

@@ -37,7 +37,7 @@ namespace IceAndFire
             if (Building?.IsMine == true) return "m";
 
             if (Unit != null)
-                return "u";
+                return Unit.IsTouch ? "f" : "u";
 
             if (HasMineSpot) return "g";
 

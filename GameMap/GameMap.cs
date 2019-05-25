@@ -36,6 +36,17 @@ namespace IceAndFire
 
         public List<Position> MineSpots = new List<Position>();
 
+        public void UpTurn()
+        {
+            Me.Gold += Me.Income - Me.Upkeep;
+            Opponent.Gold += Opponent.Income - Opponent.Upkeep;
+
+            foreach (var unit in Units.Where(u => u.IsTouch))
+            {
+                unit.IsTouch = false;
+            }
+        }
+
         public Tile[] PlacesForTrain(int level = 1)
         {
             var territory = MyPositions.Concat(MyPositions.SelectMany(this.Area4)).Distinct();

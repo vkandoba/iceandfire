@@ -11,6 +11,7 @@ namespace IceAndFire
 
         public int Id;
         public int Level;
+        public bool IsTouch = false;
         public int Upkeep => UpkeepCosts[Level];
 
         public override string ToString() => $"Unit => {base.ToString()} Id: {Id} Level: {Level}";
