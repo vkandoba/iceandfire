@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace IceAndFire
@@ -26,9 +27,25 @@ namespace IceAndFire
 
         private IEnumerable<PossibleTurn> GenerateNextMoves(GameMap game, List<ICommand> prefix, int previousState)
         {
-            var nexts = CommandGenerator.Moves(game).Where(cmd => strategy.IsGoodPlaceForMove(game, cmd.Target)).ToList();
+            return BaseGenerateNext(game, prefix, previousState,
+                (g) => CommandGenerator.Moves(g).Where(cmd => strategy.IsGoodPlaceForMove(g, cmd.Target)).ToList(),
+                GenerateNextTrains);
+        }
+
+        private IEnumerable<PossibleTurn> GenerateNextTrains(GameMap game, List<ICommand> prefix, int previousState)
+        {
+            return BaseGenerateNext(game, prefix, previousState,
+                (g) => CommandGenerator.Trains(g).Where(cmd => strategy.IsGoodPlaceForTrain(g, cmd.Target)).ToList(),
+                (g, p, s) => new List<PossibleTurn>());
+        }
+
+        private IEnumerable<PossibleTurn> BaseGenerateNext(GameMap game, List<ICommand> prefix, int previousState,
+            Func<GameMap, List<ICommand>> generateNext,
+            Func<GameMap, List<ICommand>, int, IEnumerable<PossibleTurn>> continuation)
+        {
+            var nexts = generateNext(game);
             if (!nexts.Any())
-                foreach (var turn in GenerateNextTrains(game, prefix, previousState))
+                foreach (var turn in continuation(game, prefix, previousState))
                 {
                     yield return turn;
                 }
@@ -41,8 +58,8 @@ namespace IceAndFire
                 var rate = strategy.RateGame(game);
                 if (strategy.HasImprove(previousState, rate))
                 {
-                    yield return new PossibleTurn{Rate = rate, Commands = withNext};
-                    chains.AddRange(GenerateNextMoves(game, withNext, rate));
+                    yield return new PossibleTurn { Rate = rate, Commands = withNext };
+                    chains.AddRange(BaseGenerateNext(game, withNext, rate, generateNext, continuation));
                 }
                 next.Unapply(game);
             }
@@ -50,30 +67,5 @@ namespace IceAndFire
             foreach (var chain in chains)
                 yield return chain;
         }
-
-        private IEnumerable<PossibleTurn> GenerateNextTrains(GameMap game, List<ICommand> prefix, int previousState)
-        {
-            var nextTrains = CommandGenerator.Trains(game).Where(cmd => strategy.IsGoodPlaceForTrain(game, cmd.Target)).ToList();
-            if (!nextTrains.Any())
-                yield break;
-
-            var chains = new List<PossibleTurn>();
-            foreach (var nextTrain in nextTrains)
-            {
-                nextTrain.Apply(game);
-                var withNext = prefix.Concat(new[] { nextTrain }).ToList();
-                var rate = strategy.RateGame(game);
-                if (strategy.HasImprove(previousState, rate))
-                {
-                    yield return new PossibleTurn{Rate = rate, Commands = withNext};
-                    chains.AddRange(GenerateNextTrains(game, withNext, rate));
-                }
-                nextTrain.Unapply(game);
-            }
-
-            foreach (var chain in chains)
-                yield return chain;
-        }
-        
     }
 }
