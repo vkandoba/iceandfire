@@ -3,6 +3,7 @@ using System.Linq;
 
 namespace IceAndFire
 {
+    [Serializable]
     public class Position
     {
         protected bool Equals(Position other)

@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.28803.352
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "iceandfire", "iceandfire.csproj", "{B8E12896-A443-48A6-A21F-D3A4D10F0728}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tester", "Tester.csproj", "{B8E12896-A443-48A6-A21F-D3A4D10F0728}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "builder", "..\Builder\builder.csproj", "{0F1C8C36-DB8E-4AE2-8063-969646DE02A0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IceAndFireTest", "..\IceAndFireTest\IceAndFireTest.csproj", "{5144308A-622B-4C11-9F4F-0FB39E0DAFDA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IceAndFireTest", "..\IceAndFireTest\IceAndFireTest.csproj", "{5144308A-622B-4C11-9F4F-0FB39E0DAFDA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

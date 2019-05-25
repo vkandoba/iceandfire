@@ -1,5 +1,8 @@
-﻿namespace IceAndFire
+﻿using System;
+
+namespace IceAndFire
 {
+    [Serializable]
     public class Unit : Entity
     {
 

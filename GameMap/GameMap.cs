@@ -1,6 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.IO.Compression;
 using System.Linq;
+using System.Reflection;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.Text;
 
 namespace IceAndFire
 {
@@ -66,6 +71,73 @@ namespace IceAndFire
         {
             var around = OpponentUnits.SelectMany(op => this.Area8(op.Position));
             return around.Where(p => p.IsOwned).Any();
+        }
+
+        public string Serialize()
+        {
+            var copy = new Tile[WIDTH][];
+            for (int x = 0; x < WIDTH; x++)
+            {
+                copy[x] = new Tile[HEIGHT];
+                for (int y = 0; y < HEIGHT; y++)
+                {
+                    copy[x][y] = Map[x, y];
+                }
+            }
+
+            byte[] bytes = null;
+            using (var memory = new MemoryStream())
+            {
+                var binaryFormatter = new BinaryFormatter();
+                binaryFormatter.Serialize(memory, copy);
+                bytes = memory.ToArray();
+            }
+
+            using (var memory = new MemoryStream())
+            {
+                using (var gzip = new GZipStream(memory, CompressionMode.Compress))
+                {
+                    new MemoryStream(bytes).CopyTo(gzip);
+                }
+                return Convert.ToBase64String(memory.ToArray());
+            }
+        }
+
+        public GameMap Deserialize(string str)
+        {
+            using (var memory = new MemoryStream(Convert.FromBase64String(str)))
+            {
+                using (var gzip = new GZipStream(memory, CompressionMode.Decompress))
+                {
+                    var binaryFormatter = new BinaryFormatter();
+                    var copy = (Tile[][])binaryFormatter.Deserialize(gzip);
+                    for (int x = 0; x < WIDTH; x++)
+                    {
+                        for (int y = 0; y < HEIGHT; y++)
+                        {
+                            Map[x, y] = copy[x][y];
+                        }
+                    }
+                }
+            }
+
+            return this;
+        }
+
+        public string ShowMap()
+        {
+            var str = new StringBuilder();
+            for (int y = 0; y < HEIGHT; y++)
+            {
+                for (int x = 0; x < WIDTH; x++)
+                {
+                    str.Append($"{Map[x, y].ToChar()} ");
+                }
+
+                str.AppendLine();
+            }
+
+            return str.ToString();
         }
 
         public static Position[] FindPathInternal(Func<Position, bool> isFree, 

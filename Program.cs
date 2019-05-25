@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace IceAndFire
 {
@@ -23,12 +24,24 @@ namespace IceAndFire
             // game loop
             while (true)
             {
-                gameEngine.Output.Clear();
                 ReadAndUpdateMap(gameEngine.Map);
+                Console.Error.WriteLine(gameEngine.Turn);
+                DebugMap(gameMap);
+
+                gameEngine.Output.Clear();
                 gameEngine.Solve(gameMap);
+
                 Console.WriteLine(gameEngine.Output.ToString());
                 gameEngine.Turn++;
             }
+        }
+
+        public static void DebugMap(GameMap gameMap)
+        {
+            var serializedGame = gameMap.Serialize();
+            Console.Error.WriteLine($"serialized length:{serializedGame.Length}");
+            Console.Error.WriteLine(serializedGame);
+            Console.Error.WriteLine(game.ShowMap());
         }
 
         public static void ReadAndInitMap(GameMap gameMap)
@@ -36,7 +49,7 @@ namespace IceAndFire
             for (var y = 0; y < GameMap.HEIGHT; y++)
             for (var x = 0; x < GameMap.WIDTH; x++)
             {
-                gameMap.Map[x, y] = new Tile
+                    gameMap.Map[x, y] = new Tile
                 {
                     Position = (x, y)
                 };
