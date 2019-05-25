@@ -5,12 +5,33 @@ namespace IceAndFire
 {
     public class IceAndFire
     {
+
         public static GameMap game => gameEngine.Map;
 
         public static Game gameEngine;
 
         public const int MINE_BUILD_COST = 30;
         public const int TOWER_BUILD_COST = 15;
+
+
+        public static T Measure<T>(string mtd, Func<T> action)
+        {
+            var watch = System.Diagnostics.Stopwatch.StartNew();
+            T result = action();
+            watch.Stop();
+            var elapsedMs = watch.ElapsedMilliseconds;
+            Console.Error.WriteLine($"time of {mtd} is {elapsedMs} ms");
+            return result;
+        }
+
+        public static void Measure(string mtd, Action action)
+        {
+            Measure(mtd, () =>
+            {
+                action();
+                return 0;
+            });
+        }
 
         public static void Main()
         {
@@ -24,10 +45,10 @@ namespace IceAndFire
             {
                 ReadAndUpdateMap(gameEngine.Map);
                 Console.Error.WriteLine(gameEngine.Turn);
-                DebugMap(gameMap);
+                //DebugMap(gameMap);
 
                 gameEngine.Output.Clear();
-                gameEngine.Solve(gameMap);
+                Measure("solve", () => gameEngine.Solve(gameMap));
 
                 Console.WriteLine(gameEngine.Output.ToString());
                 gameEngine.Turn++;

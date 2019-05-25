@@ -12,8 +12,7 @@ namespace IceAndFire
 
         public void TrainUnits()
         {
-            var placesForTrain = IceAndFire.game.PlacesForTrain();
-            Console.Error.WriteLine($"places for train:{placesForTrain.Aggregate("", (acc, pos) => $"{acc}|{pos}")}");
+            var placesForTrain = IceAndFire.Measure("train places", () => IceAndFire.game.PlacesForTrain());
 
             Strategies.Base.TrainBase(placesForTrain, GetSlaveTrainPlace, 1, 20);
         }

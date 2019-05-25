@@ -27,12 +27,12 @@ namespace IceAndFire
         public List<Unit> MyUnits => Units.Where(u => u.IsOwned).ToList();
         public List<Unit> OpponentUnits => Units.Where(u => u.IsOpponent).ToList();
 
-        public List<Building> Buildings = new List<Building>();
-        public List<Unit> Units = new List<Unit>();
+        public HashSet<Building> Buildings = new HashSet<Building>();
+        public HashSet<Unit> Units = new HashSet<Unit>();
 
-        public List<Tile> MyPositions = new List<Tile>();
-        public List<Tile> OpPositions = new List<Tile>();
-        public List<Tile> NeutralPositions = new List<Tile>();
+        public HashSet<Tile> MyPositions = new HashSet<Tile>();
+        public HashSet<Tile> OpPositions = new HashSet<Tile>();
+        public HashSet<Tile> NeutralPositions = new HashSet<Tile>();
 
         public List<Position> MineSpots = new List<Position>();
 
