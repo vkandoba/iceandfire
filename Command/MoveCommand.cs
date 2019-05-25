@@ -3,11 +3,13 @@
     public class MoveCommand : BaseCommand
     {
         private readonly Unit unit;
+        private readonly Position start;
         private Entity savedDestroy = null;
 
         public MoveCommand(Unit unit, Position target) : base(target)
         {
             this.unit = unit;
+            this.start = unit.Position;
         }
 
         protected override string MakeCmd() => $"MOVE {unit.Id} {target.X} {target.Y}";
@@ -34,6 +36,6 @@
             base.Unapply(game);
         }
 
-        public override string ToString() => $"{unit.Position} -> {target}";
+        public override string ToString() => $"{start} -> {target}";
     }
 }
