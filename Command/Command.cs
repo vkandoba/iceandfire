@@ -11,11 +11,5 @@
 
         protected abstract string MakeCmd();
         protected abstract void ChangeMap(GameMap map);
-
-        protected void MarkPosition(GameMap map, Position pos)
-        {
-            map.Map[pos.X, pos.Y].Owner = Owner.ME;
-            map.Map[pos.X, pos.Y].Active = true;
-        }
     }
 }

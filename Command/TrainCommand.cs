@@ -1,24 +1,22 @@
 ﻿namespace IceAndFire
 {
-    public class TrainCommand : Command
+    public class TrainCommand : BaseCommand
     {
         private readonly int level;
-        private readonly Position pos;
 
-        public TrainCommand(int level, Position pos)
+        public TrainCommand(int level, Position pos) : base(pos)
         {
             this.level = level;
-            this.pos = pos;
         }
 
-        protected override string MakeCmd() => $"TRAIN {level} {pos.X} {pos.Y}";
+        protected override string MakeCmd() => $"TRAIN {level} {target.X} {target.Y}";
 
         protected override void ChangeMap(GameMap map)
         {
-            MarkPosition(map, pos);
+            base.ChangeMap(map);
             map.HoldGold += Unit.TrainCosts[level];
             map.HoldUpkeep += Unit.UpkeepCosts[level];
-            map.HoldPositions.Add(pos);
+            map.HoldPositions.Add(target);
         }
     }
 }

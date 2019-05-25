@@ -1,31 +1,20 @@
 ﻿namespace IceAndFire
 {
-    public class MoveCommand : Command
+    public class MoveCommand : BaseCommand
     {
         private readonly int id;
-        private readonly Position pos;
 
-        public MoveCommand(int id, Position pos)
+        public MoveCommand(int id, Position pos) : base(pos)
         {
             this.id = id;
-            this.pos = pos;
         }
 
-        protected override string MakeCmd() => $"MOVE {id} {pos.X} {pos.Y}";
+        protected override string MakeCmd() => $"MOVE {id} {target.X} {target.Y}";
 
         protected override void ChangeMap(GameMap map)
         {
-            map.HoldPositions.Add(pos);
-            MarkPosition(map, pos);
-        }
-    }
-
-    public class WaitCommand : Command
-    {
-        protected override string MakeCmd() => "WAIT";
-
-        protected override void ChangeMap(GameMap map)
-        {
+            base.ChangeMap(map);
+            map.HoldPositions.Add(target);
         }
     }
 }
