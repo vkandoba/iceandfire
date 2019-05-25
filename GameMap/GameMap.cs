@@ -36,6 +36,8 @@ namespace IceAndFire
         private int myGoldChange;
         private int oppenentGoldChange;
 
+        private IDictionary<Unit, bool> touchUnitState = new Dictionary<Unit, bool>();
+
         public void UpTurn()
         {
             myGoldChange = Me.Income - Me.Upkeep;
@@ -45,6 +47,7 @@ namespace IceAndFire
 
             foreach (var unit in Units.Where(u => u.IsTouch))
             {
+                touchUnitState[unit] = unit.IsTouch;
                 unit.IsTouch = false;
             }
         }
@@ -56,7 +59,7 @@ namespace IceAndFire
 
             foreach (var unit in Units.Where(u => u.IsTouch))
             {
-                unit.IsTouch = false;
+                unit.IsTouch = touchUnitState[unit];
             }
         }
 
@@ -140,6 +143,7 @@ namespace IceAndFire
             Buildings.Clear();
             
             MyPositions.Clear();
+            touchUnitState.Clear();
         }
     }
 }
