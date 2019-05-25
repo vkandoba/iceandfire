@@ -21,12 +21,39 @@ namespace IceAndFire
         public IEnumerable<PossibleTurn> Turns(GameMap game)
         {
             strategy.StartSimulate(game);
-            return GenerateNextTrains(game, new List<ICommand>(), strategy.RateGame(game));
+            return GenerateNextMoves(game, new List<ICommand>(), strategy.RateGame(game));
+        }
+
+        private IEnumerable<PossibleTurn> GenerateNextMoves(GameMap game, List<ICommand> prefix, int previousState)
+        {
+            var nexts = CommandGenerator.Moves(game).Where(cmd => strategy.IsGoodPlaceForMove(game, cmd.Target)).ToList();
+            if (!nexts.Any())
+                foreach (var turn in GenerateNextTrains(game, prefix, previousState))
+                {
+                    yield return turn;
+                }
+
+            var chains = new List<PossibleTurn>();
+            foreach (var next in nexts)
+            {
+                next.Apply(game);
+                var withNext = prefix.Concat(new[] { next }).ToList();
+                var rate = strategy.RateGame(game);
+                if (strategy.HasImprove(previousState, rate))
+                {
+                    yield return new PossibleTurn{Rate = rate, Commands = withNext};
+                    chains.AddRange(GenerateNextMoves(game, withNext, rate));
+                }
+                next.Unapply(game);
+            }
+
+            foreach (var chain in chains)
+                yield return chain;
         }
 
         private IEnumerable<PossibleTurn> GenerateNextTrains(GameMap game, List<ICommand> prefix, int previousState)
         {
-            var nextTrains = CommandGenerator.Trains(game).Where(cmd => strategy.IsGoodPlace(game, cmd.Target)).ToList();
+            var nextTrains = CommandGenerator.Trains(game).Where(cmd => strategy.IsGoodPlaceForTrain(game, cmd.Target)).ToList();
             if (!nextTrains.Any())
                 yield break;
 

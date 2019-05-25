@@ -4,14 +4,26 @@ namespace IceAndFire
 {
     public class GrowthSimulationStrategy : ISimulationStrategy
     {
-        private HashSet<Position> visited;
+        private HashSet<Position> visitedMove;
+        private HashSet<Position> visitedTrain;
 
         public void StartSimulate(GameMap game)
         {
-            visited = new HashSet<Position>();
+            visitedMove = new HashSet<Position>();
+            visitedTrain = new HashSet<Position>();
         }
 
-        public bool IsGoodPlace(GameMap game, Position target)
+        public bool IsGoodPlaceForTrain(GameMap game, Position target)
+        {
+            return IsGoodPlaceInternal(game, target, visitedTrain);
+        }
+
+        public bool IsGoodPlaceForMove(GameMap game, Position target)
+        {
+            return IsGoodPlaceInternal(game, target, visitedMove);
+        }
+
+        private bool IsGoodPlaceInternal(GameMap game, Position target, HashSet<Position> visited)
         {
             if (visited.Contains(target))
                 return false;
