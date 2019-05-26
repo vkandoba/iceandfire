@@ -5,11 +5,12 @@ namespace IceAndFire
 {
     public class GrowthStrategy : IStrategy
     {
+        public int Deep => IceAndFire.game.MyUnits.Count < 4 ? 2 : 1;
+
         public void MoveUnits()
         {
-            var deep = IceAndFire.game.MyUnits.Count < 4 ? 2 : 1;
             var turnGenerator = new TurnGenerator(() => new GrowthSimulationStrategy());
-            var possibleTurns = turnGenerator.Turns(IceAndFire.game, deep).ToArray();
+            var possibleTurns = turnGenerator.Turns(IceAndFire.game, Deep).ToArray();
             var bestRate = possibleTurns.Max(x => x.Rate);
             var bestTurns = possibleTurns.Where(x => bestRate == x.Rate).ToArray();
             var best = bestTurns.FirstOrDefault();

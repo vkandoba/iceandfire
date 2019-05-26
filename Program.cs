@@ -43,7 +43,7 @@ namespace IceAndFire
             // game loop
             while (true)
             {
-                ReadAndUpdateMap(gameEngine.Map);
+                Measure("read and update map", () => ReadAndUpdateMap(gameEngine.Map));
                 Console.Error.WriteLine(gameEngine.Turn);
                 //DebugMap(gameMap);
 

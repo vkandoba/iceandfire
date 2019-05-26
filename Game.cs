@@ -25,7 +25,7 @@ namespace IceAndFire
             Commands.Wait();
 
             var strategy = ChoiceStrategy(gameMap);
-            Console.Error.WriteLine($"strategy: {strategy.GetType().Name}");
+            Console.Error.WriteLine($"strategy: {strategy.GetType().Name} deep: {(strategy as GrowthStrategy)?.Deep}");
 
             strategy.MoveUnits();
             strategy.TrainUnits();
