@@ -70,9 +70,6 @@ namespace IceAndFire
         {
             var defaultPlace = IceAndFire.game.Area4[IceAndFire.game.MyHq].First();
             var placeForTrain = getPlace(places) ?? defaultPlace;
-            //Console.Error.WriteLine($"{IceAndFire.game.MyGold}, " +
-            //                        $"{IceAndFire.game.MyUpkeep + IceAndFire.Unit.UpkeepCosts[unitLevel]}, " +
-            //                        $"{IceAndFire.game.MyUnits.Count(u => u.Level == unitLevel)}");
             if (IceAndFire.game.MyGold >= Unit.TrainCosts[unitLevel] && 
                 (IceAndFire.game.MyIncome >= IceAndFire.game.MyUpkeep + Unit.UpkeepCosts[unitLevel]) &&
                 IceAndFire.game.MyUnits.Count(u => u.Level == unitLevel) < unitLimit)

@@ -14,7 +14,7 @@ namespace IceAndFire
 
         public bool TrainKiller()
         {
-            var placesForTrain = IceAndFire.game.PlacesForTrain();
+            var placesForTrain = IceAndFire.game.PlacesForTrain(3);
 
             var opKiller = placesForTrain
                 .Where(t => t.Unit != null)

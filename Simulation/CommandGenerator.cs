@@ -30,13 +30,22 @@ namespace IceAndFire
 
         public static ICommand[] Trains(GameMap map)
         {
-            if (map.MyGold >= Unit.TrainCosts[1])
+            var trains = new List<ICommand>();
+            trains.AddRange(TrainInternal(map, 1));
+            trains.AddRange(TrainInternal(map, 2));
+            trains.AddRange(TrainInternal(map, 3));
+            return trains.ToArray();
+        }
+
+        private static ICommand[] TrainInternal(GameMap map, int level)
+        {
+            if (map.MyGold >= Unit.TrainCosts[level])
             {
                 var places = map.PlacesForTrain();
                 var cmd = new ICommand[places.Length];
                 for (int i = 0; i < places.Length; i++)
                 {
-                    cmd[i] = new TrainCommand(1, places[i].Position);
+                    cmd[i] = new TrainCommand(level, places[i].Position);
                 }
                 return cmd;
             }

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.IO.Compression;
-using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
 
 namespace IceAndFire
@@ -9,7 +8,7 @@ namespace IceAndFire
     public static class Serialize
     {
         [Serializable]
-        private class GameData
+        public class GameData
         {
             public Tile[][] MapCopy;
             public PlayerState MeState;
@@ -48,53 +47,5 @@ namespace IceAndFire
                 return Convert.ToBase64String(memory.ToArray());
             }
         }
-
-        public static GameMap Load(GameMap gameMap, string str)
-        {
-            using (var memory = new MemoryStream(Convert.FromBase64String(str)))
-            {
-                using (var gzip = new GZipStream(memory, CompressionMode.Decompress))
-                {
-                    var data = (GameData)serializer.Deserialize(gzip);
-                    var copy = data.MapCopy;
-                    gameMap.Clear();
-                    for (int x = 0; x < GameMap.WIDTH; x++)
-                    {
-                        for (int y = 0; y < GameMap.HEIGHT; y++)
-                        {
-                            var tile = copy[x][y];
-                            gameMap.Map[x, y] = tile;
-                            if (!tile.IsWall)
-                            {
-                                if (tile.IsOwned && tile.Active)
-                                    gameMap.MyPlaces++;
-
-                                if (tile.Unit != null)
-                                    gameMap.Units.Add(tile, tile.Unit);
-                                if (tile.Building != null)
-                                    gameMap.Buildings.Add(tile, tile.Building);
-                            }
-                        }
-                    }
-
-                    //update areas
-                    gameMap.UpdateAreas();
-
-                    gameMap.Me = data.MeState;
-                    gameMap.Opponent = data.OpState;
-
-                    // Usefull for symmetric AI
-                    //if (data.MeState.Team == Team.Ice)
-                    //{
-                    //    gameMap.MyPlaces.Reverse();
-                    //    gameMap.OpPositions.Reverse();
-                    //    gameMap.NeutralPositions.Reverse();
-                    //}
-                }
-            }
-
-            return gameMap;
-        }
-
     }
 }
