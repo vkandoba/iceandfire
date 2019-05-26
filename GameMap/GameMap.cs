@@ -20,8 +20,8 @@ namespace IceAndFire
         public PlayerState Me = new PlayerState();
         public PlayerState Opponent = new PlayerState();
 
-        public readonly Tile[,] Map = new Tile[WIDTH, WIDTH];
-        
+        public Tile[,] Map = new Tile[WIDTH, WIDTH];
+
         public Tile MyHq => MyTeam == Team.Fire ? Map[0, 0] : Map[11, 11];
         public Tile OpponentHq => MyTeam == Team.Fire ? Map[11, 11] : Map[0, 0];
         public Unit[] MyUnits => Units.Values.Where(u => u.IsOwned).ToArray();
@@ -79,7 +79,7 @@ namespace IceAndFire
                     var tile = Map[x, y];
                     var area = Area4[Map[x, y]];
                     if (((tile.IsOwned && tile.Active) ||
-                        area.Any(n => n.IsOwned && n.IsOwned)) &&
+                         area.Any(n => n.IsOwned && n.IsOwned)) &&
                         tile.AllowMove(level))
                     {
                         places[count] = tile;
@@ -131,6 +131,7 @@ namespace IceAndFire
                 tile.Unit = null;
                 return opUnit;
             }
+
             if (tile.Building != null)
             {
                 var opBuilding = tile.Building;
@@ -170,7 +171,7 @@ namespace IceAndFire
         {
             Units.Clear();
             Buildings.Clear();
-            
+
             MyPlaces = 0;
             touchUnitState.Clear();
         }
@@ -198,6 +199,22 @@ namespace IceAndFire
         private Tile[] Area8Internal(Position pos)
         {
             return pos.Area8().Select(p => Map[p.X, p.Y]).Where(t => !t.IsWall).ToArray();
+        }
+
+        public void Reverse()
+        {
+            Me.Team = Team.Fire;
+            Opponent.Team = Team.Ice;
+            var reverse = new Tile[GameMap.WIDTH, GameMap.HEIGHT];
+            for (var y = 0; y < GameMap.HEIGHT; y++)
+            {
+                for (var x = 0; x < GameMap.WIDTH; x++)
+                {
+                    reverse[x, y] = Map[GameMap.WIDTH - x - 1, GameMap.HEIGHT - y - 1];
+                }
+            }
+
+            Map = reverse;
         }
     }
 }
