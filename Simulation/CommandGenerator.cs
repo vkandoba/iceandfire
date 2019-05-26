@@ -41,7 +41,7 @@ namespace IceAndFire
         {
             if (map.MyGold >= Unit.TrainCosts[level])
             {
-                var places = map.PlacesForTrain();
+                var places = map.PlacesForTrain(level);
                 var cmd = new ICommand[places.Length];
                 for (int i = 0; i < places.Length; i++)
                 {
