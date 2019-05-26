@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Xml;
 
 namespace IceAndFire
 {
@@ -56,7 +55,7 @@ namespace IceAndFire
             {
                 Deep = 1,
                 Strategy = strategy,
-                Prefix = new List<CommandWithTurn>(),
+                Prefix = new CommandWithTurn[0],
                 PreviousRate = strategy.RateGame(game)
             };
             return GenerateNextMoves(game, deep, state);
@@ -87,7 +86,7 @@ namespace IceAndFire
                 var rate = state.Strategy.RateGame(game);
                 if (state.Strategy.HasImprove(state.PreviousRate, rate))
                 {
-                    var withNext = state.Prefix.Concat(moves).ToList();
+                    var withNext = state.Prefix.Concat(moves).ToArray();
                     var nextState = new GenerateState
                     {
                         Deep = state.Deep,
@@ -158,7 +157,7 @@ namespace IceAndFire
                 var rate = state.Strategy.RateGame(game);
                 if (state.Strategy.HasImprove(state.PreviousRate, rate))
                 {
-                    var withNext = state.Prefix.Concat(new[] { new CommandWithTurn { Command = next, TurnDeep = state.Deep } }).ToList();
+                    var withNext = state.Prefix.Concat(new[] { new CommandWithTurn { Command = next, TurnDeep = state.Deep } }).ToArray();
                     var nextState = new GenerateState
                     {
                         Deep = state.Deep,
@@ -208,7 +207,7 @@ namespace IceAndFire
             {
                 Deep = 1,
                 Strategy = strategy,
-                Prefix = new List<CommandWithTurn>(),
+                Prefix = new CommandWithTurn[0],
                 PreviousRate = strategy.RateGame(game)
             };
             return GenerateNextMoves(game, 1, state);
@@ -222,7 +221,7 @@ namespace IceAndFire
             {
                 Deep = 1,
                 Strategy = strategy,
-                Prefix = new List<CommandWithTurn>(),
+                Prefix = new CommandWithTurn[0],
                 PreviousRate = strategy.RateGame(game)
             };
             return GenerateNextTrains(game, 1, state);
