@@ -51,7 +51,7 @@ namespace IceAndFire
 
             var places = IceAndFire.game.PlacesForTower();
             var placesUnderAttact =
-                places.ToDictionary(p => p, p => IceAndFire.game.Area8(p).Count(c => c.Unit?.IsOpponent == true));
+                places.ToDictionary(p => p, p => IceAndFire.game.Area8[p].Count(c => c.Unit?.IsOpponent == true));
             if (placesUnderAttact.Values.Max() > 0)
             {
                 var towerPlace = placesUnderAttact.OrderByDescending(p => p.Value).First().Key;

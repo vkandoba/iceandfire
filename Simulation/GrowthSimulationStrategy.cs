@@ -30,12 +30,12 @@ namespace IceAndFire
 
         public IEnumerable<List<ICommand>> PrepareMoveCommand(GameMap game, IEnumerable<List<ICommand>> moveCommands)
         {
-            return moveCommands.OrderByDescending(cmds => cmds.Sum(c => game.MyHq.MDistanceTo(c.Target)));
+            return moveCommands.OrderByDescending(cmds => cmds.Sum(c => game.MyHq.Position.MDistanceTo(c.Target)));
         }
 
         public IEnumerable<ICommand> PreparTrainCommand(GameMap game, IEnumerable<ICommand> trainCommands)
         {
-            return trainCommands.OrderByDescending(c => game.MyHq.MDistanceTo(c.Target));
+            return trainCommands.OrderByDescending(c => game.MyHq.Position.MDistanceTo(c.Target));
         }
 
         private bool IsGoodPlaceInternal(GameMap game, Position target, HashSet<Position> visited = null)

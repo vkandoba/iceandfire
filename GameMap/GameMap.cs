@@ -21,8 +21,8 @@ namespace IceAndFire
 
         public readonly Tile[,] Map = new Tile[WIDTH, WIDTH];
         
-        public Position MyHq => MyTeam == Team.Fire ? (0, 0) : (11, 11);
-        public Position OpponentHq => MyTeam == Team.Fire ? (11, 11) : (0, 0);
+        public Tile MyHq => MyTeam == Team.Fire ? Map[0, 0] : Map[11, 11];
+        public Tile OpponentHq => MyTeam == Team.Fire ? Map[11, 11] : Map[0, 0];
         public List<Unit> MyUnits => Units.Where(u => u.IsOwned).ToList();
         public List<Unit> OpponentUnits => Units.Where(u => u.IsOpponent).ToList();
 
@@ -32,6 +32,10 @@ namespace IceAndFire
         public HashSet<Tile> MyPositions = new HashSet<Tile>();
 
         public List<Position> MineSpots = new List<Position>();
+
+        public Dictionary<Tile, Tile[]> Area4 = new Dictionary<Tile, Tile[]>();
+
+        public Dictionary<Tile, Tile[]> Area8 = new Dictionary<Tile, Tile[]>();
 
         private int myGoldChange;
         private int oppenentGoldChange;
@@ -65,7 +69,7 @@ namespace IceAndFire
 
         public Tile[] PlacesForTrain(int level = 1)
         {
-            var territory = MyPositions.Concat(MyPositions.SelectMany(this.Area4)).Distinct();
+            var territory = MyPositions.Concat(MyPositions.SelectMany(t => Area4[t])).Distinct();
             return territory.Where(t => t.AllowMove(level)).ToArray();
         }
 
@@ -76,7 +80,7 @@ namespace IceAndFire
 
         public bool HasMenace()
         {
-            var around = OpponentUnits.SelectMany(op => this.Area8(op.Position));
+            var around = OpponentUnits.SelectMany(op => Area8[Map[op.X, op.Y]]);
             return around.Where(p => p.IsOwned).Any();
         }
 
@@ -136,7 +140,6 @@ namespace IceAndFire
             return false;
         }
 
-
         public void Clear()
         {
             Units.Clear();
@@ -144,6 +147,31 @@ namespace IceAndFire
             
             MyPositions.Clear();
             touchUnitState.Clear();
+        }
+
+        public void UpdateAreas()
+        {
+            for (var y = 0; y < HEIGHT; y++)
+            {
+                for (var x = 0; x < WIDTH; x++)
+                {
+                    var tile = Map[x, y];
+                    if (!Area4.ContainsKey(tile))
+                        Area4[tile] = Area4Internal((x, y));
+                    if (!Area8.ContainsKey(tile))
+                        Area8[tile] = Area8Internal((x, y));
+                }
+            }
+        }
+
+        private Tile[] Area4Internal(Position pos)
+        {
+            return pos.Area4().Select(p => Map[p.X, p.Y]).Where(t => !t.IsWall).ToArray();
+        }
+
+        private Tile[] Area8Internal(Position pos)
+        {
+            return pos.Area8().Select(p => Map[p.X, p.Y]).Where(t => !t.IsWall).ToArray();
         }
     }
 }

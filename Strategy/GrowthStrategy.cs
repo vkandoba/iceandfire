@@ -7,7 +7,7 @@ namespace IceAndFire
     {
         public void MoveUnits()
         {
-            var deep = IceAndFire.gameEngine.Turn < 5 ? 3 : 2;
+            var deep = IceAndFire.game.MyUnits.Count < 4 ? 2 : 1;
             var turnGenerator = new TurnGenerator(() => new GrowthSimulationStrategy());
             var possibleTurns = turnGenerator.Turns(IceAndFire.game, deep).ToArray();
             var bestRate = possibleTurns.Max(x => x.Rate);

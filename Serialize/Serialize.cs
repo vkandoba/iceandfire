@@ -77,6 +77,9 @@ namespace IceAndFire
                         }
                     }
 
+                    //update areas
+                    gameMap.UpdateAreas();
+
                     gameMap.Me = data.MeState;
                     gameMap.Opponent = data.OpState;
 

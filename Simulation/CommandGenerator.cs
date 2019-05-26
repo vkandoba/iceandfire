@@ -11,7 +11,7 @@ namespace IceAndFire
             var units = map.MyUnits;
             foreach (var unit in units.Where(u => !u.IsTouch))
             {
-                var unitMoves = map.Area4(unit.Position)
+                var unitMoves = map.Area4[map.Map[unit.Position.X, unit.Position.Y]]
                     .Where(tile => tile.AllowMove() && filter(tile.Position))
                     .Select(tile => new MoveCommand(unit, tile.Position) as ICommand)
                     .ToList();

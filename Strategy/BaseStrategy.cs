@@ -17,14 +17,14 @@ namespace IceAndFire
             var mySpots = myTerritory.Where(x => x.HasMineSpot && x.Building == null).ToArray();
             if (mySpots.Any() && IceAndFire.game.MyGold > IceAndFire.MINE_BUILD_COST)
             {
-                var posForMine = mySpots.Select(s => s.Position).OrderBy(IceAndFire.game.MyHq.MDistanceTo).First();
+                var posForMine = mySpots.Select(s => s.Position).OrderBy(IceAndFire.game.MyHq.Position.MDistanceTo).First();
                 Commands.Build(BuildingType.Mine, posForMine);
             }
         }
 
         public void MoveUnits()
         {
-            Position target = IceAndFire.game.OpponentHq;
+            Position target = IceAndFire.game.OpponentHq.Position;
 
             if (IceAndFire.game.Map[target.X, target.Y].IsOwned) return;
 
@@ -46,9 +46,9 @@ namespace IceAndFire
 
         public Tile GetOccupationMove(Unit unit)
         {
-            var ns = IceAndFire.game.Area4(unit.Position);
+            var ns = IceAndFire.game.Area4[IceAndFire.game.Map[unit.Position.X, unit.Position.Y]];
             var next = ns.Where(c => c.Unit == null)
-                         .OrderByDescending(p => IceAndFire.game.Area8(p)
+                         .OrderByDescending(p => IceAndFire.game.Area8[p]
                                                     .Where(c => !c.IsWall && c.IsNeutral)
                                                     .Count())
                          .FirstOrDefault();
@@ -68,7 +68,7 @@ namespace IceAndFire
 
         public bool TrainBase(Tile[] places, Func<Tile[], Tile> getPlace, int unitLevel, int unitLimit)
         {
-            var defaultPlace = IceAndFire.game.Area4(IceAndFire.game.MyHq).First();
+            var defaultPlace = IceAndFire.game.Area4[IceAndFire.game.MyHq].First();
             var placeForTrain = getPlace(places) ?? defaultPlace;
             //Console.Error.WriteLine($"{IceAndFire.game.MyGold}, " +
             //                        $"{IceAndFire.game.MyUpkeep + IceAndFire.Unit.UpkeepCosts[unitLevel]}, " +
@@ -87,7 +87,7 @@ namespace IceAndFire
         public bool TrainSlave(Tile[] places, int limit)
         {
             return TrainBase(places, ps => ps
-                    .OrderByDescending(p => IceAndFire.game.Area4(p)
+                    .OrderByDescending(p => IceAndFire.game.Area4[p]
                                              .Where(c => !c.IsOwned && !c.IsWall).Count())
                     .FirstOrDefault(),
                 1,
@@ -96,7 +96,7 @@ namespace IceAndFire
 
         public bool TrainSolder(Tile[] places)
         {
-            return TrainBase(places, ps => ps.OrderBy(c => IceAndFire.game.OpponentHq.MDistanceTo(c.Position))
+            return TrainBase(places, ps => ps.OrderBy(c => IceAndFire.game.OpponentHq.Position.MDistanceTo(c.Position))
                     .FirstOrDefault(),
                 2,
                 4);
@@ -104,7 +104,7 @@ namespace IceAndFire
 
         public bool TrainKiller(Tile[] places)
         {
-            return TrainBase(places, ps => ps.OrderBy(c => IceAndFire.game.OpponentHq.MDistanceTo(c.Position))
+            return TrainBase(places, ps => ps.OrderBy(c => IceAndFire.game.OpponentHq.Position.MDistanceTo(c.Position))
                     .FirstOrDefault(),
                 3,
                 2);

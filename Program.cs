@@ -66,13 +66,13 @@ namespace IceAndFire
         public static void ReadAndInitMap(GameMap gameMap)
         {
             for (var y = 0; y < GameMap.HEIGHT; y++)
-            for (var x = 0; x < GameMap.WIDTH; x++)
-            {
-                    gameMap.Map[x, y] = new Tile
+                for (var x = 0; x < GameMap.WIDTH; x++)
                 {
-                    Position = (x, y)
-                };
-            }
+                    gameMap.Map[x, y] = new Tile
+                    {
+                        Position = (x, y)
+                    };
+                }
 
             var numberMineSpots = int.Parse(Console.ReadLine());
             for (var i = 0; i < numberMineSpots; i++)
@@ -113,6 +113,9 @@ namespace IceAndFire
                         gameMap.MyPositions.Add(cell);
                 }
             }
+
+            //update areas
+            gameMap.UpdateAreas();
 
             // Read Buildings
             var buildingCount = int.Parse(Console.ReadLine());
