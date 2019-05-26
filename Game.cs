@@ -22,12 +22,11 @@ namespace IceAndFire
         public void Solve(GameMap gameMap)
         {
             // Make sur the AI doesn't timeout
-            Wait();
+            Commands.Wait();
 
             var strategy = ChoiceStrategy(gameMap);
             Console.Error.WriteLine($"strategy: {strategy.GetType().Name}");
 
-            Commands.Wait();
             strategy.MoveUnits();
             strategy.TrainUnits();
             strategy.ConstructBuildings();
@@ -41,11 +40,6 @@ namespace IceAndFire
                 return Strategies.Growth;
 
             return Strategies.Base;
-        }
-
-        public void Wait()
-        {
-            Output.Append("WAIT;");
         }
     }
 }
