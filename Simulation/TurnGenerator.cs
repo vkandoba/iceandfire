@@ -18,7 +18,7 @@ namespace IceAndFire
 
         public class PossibleTurn
         {
-            public List<CommandWithTurn> Commands { get; set; }
+            public CommandWithTurn[] Commands { get; set; }
             public int Rate { get; set; }
 
             public override string ToString()
@@ -37,7 +37,7 @@ namespace IceAndFire
 
         private class GenerateState
         {
-            public List<CommandWithTurn> Prefix;
+            public CommandWithTurn[] Prefix;
             public ISimulationStrategy Strategy;
             public int Deep;
             public int PreviousRate;
@@ -64,10 +64,10 @@ namespace IceAndFire
 
         private IEnumerable<List<CommandWithTurn>> OneTurnMovesInternal(GameMap game, GenerateState state)
         {
-            var unitMoves = CommandGenerator.MovesByUnit(game, p => state.Strategy.IsGoodPlaceForMove(game, p)).ToList();
-            var prepared = state.Strategy.PrepareMoveCommand(game, unitMoves).ToList();
+            var unitMoves = CommandGenerator.MovesByUnit(game, p => state.Strategy.IsGoodPlaceForMove(game, p));
+            var prepared = state.Strategy.PrepareMoveCommand(game, unitMoves).ToArray();
             return CrossCommands(prepared)
-                .Where(x => x.Select(c => c.Target).Distinct().Count() == x.Count)
+                .Where(x => x.Select(c => c.Target).Distinct().Count() == x.Length)
                 .Select(commands => commands.Select(c => new CommandWithTurn {Command = c, TurnDeep = state.Deep}).ToList());
         }
 
@@ -175,27 +175,29 @@ namespace IceAndFire
                 yield return chain;
         }
 
-        private IEnumerable<List<ICommand>> CrossCommands(List<List<ICommand>> sets)
+        private ICommand[][] CrossCommands(ICommand[][] sets)
         {
-            if (sets.Count == 0)
+            if (sets.Length == 0)
                 return sets;
-            if (sets.Count == 1)
-                return sets.First().Select(x => new List<ICommand>(new[] { x }));
-
-            List<ICommand> head = sets.First();
-            List<List<ICommand>> tail = CrossCommands(sets.Skip(1).ToList()).ToList();
-            List<List<ICommand>> product = new List<List<ICommand>>();
-            for (int i = 0; i < head.Count; i++)
+            if (sets.Length == 1)
             {
-                for (int j = 0; j < tail.Count; j++)
+                return sets[0].Select(x => new[] { x }).ToArray();
+            }
+
+            ICommand[] head = sets[0];
+            ICommand[][] tail = CrossCommands(sets.Skip(1).ToArray());
+            List<ICommand[]> product = new List<ICommand[]>();
+            for (int i = 0; i < head.Length; i++)
+            {
+                for (int j = 0; j < tail.Length; j++)
                 {
-                    List<ICommand> item = new List<ICommand>();
-                    item.Add(head[i]);
-                    item = item.Concat(tail[j]).ToList();
+                    ICommand[] item = new ICommand[tail[j].Length + 1];
+                    item[0] = head[i];
+                    Array.Copy(tail[j], 0, item, 1, tail[j].Length);
                     product.Add(item);
                 }
             }
-            return product;
+            return product.ToArray();
         }
 
         public IEnumerable<PossibleTurn> OneTurnMoves(GameMap game)

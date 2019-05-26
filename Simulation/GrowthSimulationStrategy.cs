@@ -28,7 +28,7 @@ namespace IceAndFire
             return turn.Rate == maxRate;
         }
 
-        public IEnumerable<List<ICommand>> PrepareMoveCommand(GameMap game, IEnumerable<List<ICommand>> moveCommands)
+        public IEnumerable<ICommand[]> PrepareMoveCommand(GameMap game, IEnumerable<ICommand[]> moveCommands)
         {
             return moveCommands.OrderByDescending(cmds => cmds.Sum(c => game.MyHq.Position.MDistanceTo(c.Target)));
         }
