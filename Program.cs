@@ -45,11 +45,11 @@ namespace IceAndFire
             {
                 Measure("read and update map", () => ReadAndUpdateMap(gameEngine.Map));
                 Console.Error.WriteLine(gameEngine.Turn);
-                //DebugMap(gameMap);
 
                 gameEngine.Output.Clear();
                 Measure("solve", () => gameEngine.Solve(gameMap));
 
+                //DebugMap(gameMap);
                 Console.WriteLine(gameEngine.Output.ToString());
                 gameEngine.Turn++;
             }
@@ -132,8 +132,17 @@ namespace IceAndFire
                     Type = (BuildingType)int.Parse(inputs[1]),
                     Position = (int.Parse(inputs[2]), int.Parse(inputs[3]))
                 };
-                gameMap.Map[building.X, building.Y].Building = building;
-                gameMap.Buildings.Add(gameMap.Map[building.X, building.Y], building);
+                var tile = gameMap.Map[building.X, building.Y];
+                tile.Building = building;
+                gameMap.Buildings.Add(tile, building);
+                if (building.IsOpponent && building.IsTower)
+                {
+                    var towerArea = gameMap.Area4[tile];
+                    for (int b = 0; b < towerArea.Length; b++)
+                    {
+                        towerArea[b].IsUnderAttack = true;
+                    }
+                }
             }
 
             // Read Units

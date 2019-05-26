@@ -4,9 +4,24 @@
     {
         public static bool AllowMove(this Tile tile, int level = 1)
         {
-            //todo: учитывать башни противника
-            return !((tile.Building != null && tile.IsOwned) || tile.IsWall ||
-                     tile.Unit?.IsOwned == true || (tile.Unit?.Level ?? 0) >= level);
+            if (tile.IsWall)
+                return false;
+            if (tile.IsUnderAttack)
+                return level == 3;
+            if (tile.Building != null)
+            {
+                if (tile.IsOwned && !tile.Building.IsMine)
+                    return false;
+            }
+            if (tile.Unit != null)
+            {
+                if (tile.Unit.IsOwned)
+                    return false;
+
+                return level != 1 && level >= tile.Unit.Level;
+            }
+
+            return true;
         }
 
         public static bool AllowBuilldTower(this Tile tile)
