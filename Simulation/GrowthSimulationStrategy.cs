@@ -54,6 +54,9 @@ namespace IceAndFire
 
         public int RateGame(GameMap game)
         {
+            if (game.OpponentHq.IsOwned)
+                return int.MaxValue;
+
             var rate = game.MyPlaces;
             if (rate > maxRate)
                 maxRate = rate;
