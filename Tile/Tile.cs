@@ -9,8 +9,12 @@ namespace IceAndFire
         public bool HasMineSpot;
         public bool IsWall;
 
+        [NonSerialized()]
+        public bool IsUnderAttack;
+
         public Owner Owner = Owner.NEUTRAL;
 
+        [NonSerialized()]
         public Position Position;
 
         public Unit Unit;
