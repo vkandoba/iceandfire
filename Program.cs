@@ -114,8 +114,9 @@ namespace IceAndFire
                 }
             }
 
-            //update areas
-            gameMap.UpdateAreas();
+            if (gameEngine.Turn <= 1)
+                //update areas
+                gameMap.UpdateAreas();
 
             // Read Buildings
             var buildingCount = int.Parse(Console.ReadLine());
