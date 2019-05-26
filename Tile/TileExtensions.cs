@@ -4,6 +4,7 @@
     {
         public static bool AllowMove(this Tile tile, int level = 1)
         {
+            //todo: учитывать башни противника
             return !((tile.Building != null && tile.IsOwned) || tile.IsWall ||
                      tile.Unit?.IsOwned == true || (tile.Unit?.Level ?? 0) >= level);
         }

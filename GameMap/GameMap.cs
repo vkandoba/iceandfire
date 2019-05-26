@@ -24,8 +24,8 @@ namespace IceAndFire
         
         public Tile MyHq => MyTeam == Team.Fire ? Map[0, 0] : Map[11, 11];
         public Tile OpponentHq => MyTeam == Team.Fire ? Map[11, 11] : Map[0, 0];
-        public List<Unit> MyUnits => Units.Values.Where(u => u.IsOwned).ToList();
-        public List<Unit> OpponentUnits => Units.Values.Where(u => u.IsOpponent).ToList();
+        public Unit[] MyUnits => Units.Values.Where(u => u.IsOwned).ToArray();
+        public Unit[] OpponentUnits => Units.Values.Where(u => u.IsOpponent).ToArray();
 
         public Dictionary<Tile, Unit> Units = new Dictionary<Tile, Unit>();
         public Dictionary<Tile, Building> Buildings = new Dictionary<Tile, Building>();
