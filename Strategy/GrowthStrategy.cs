@@ -5,7 +5,7 @@ namespace IceAndFire
 {
     public class GrowthStrategy : IStrategy
     {
-        public int Deep => IceAndFire.game.MyUnits.Count < 4 ? 2 : 1;
+        public int Deep => IceAndFire.game.MyUnits.Count < 4 ? 3 : 2;
 
         public void MoveUnits()
         {

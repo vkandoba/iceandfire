@@ -10,9 +10,9 @@ namespace IceAndFire
 
         public void ConstructMines()
         {
-            var myTerritory = IceAndFire.game.MyPositions
+            var myTerritory = IceAndFire.game.MineSpots
                 .Select(x => IceAndFire.game.Map[x.X, x.Y])
-                .Where(x => x.Active)
+                .Where(t => t.IsOwned && t.Active)
                 .ToArray();
             var mySpots = myTerritory.Where(x => x.HasMineSpot && x.Building == null).ToArray();
             if (mySpots.Any() && IceAndFire.game.MyGold > IceAndFire.MINE_BUILD_COST)

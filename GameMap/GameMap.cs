@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 
@@ -29,7 +30,7 @@ namespace IceAndFire
         public Dictionary<Tile, Unit> Units = new Dictionary<Tile, Unit>();
         public Dictionary<Tile, Building> Buildings = new Dictionary<Tile, Building>();
 
-        public HashSet<Tile> MyPositions = new HashSet<Tile>();
+        public int MyPlaces = 0;
 
         public List<Position> MineSpots = new List<Position>();
 
@@ -69,30 +70,55 @@ namespace IceAndFire
 
         public Tile[] PlacesForTrain(int level = 1)
         {
-            var territory = MyPositions.Concat(MyPositions.SelectMany(t => Area4[t])).Distinct();
-            return territory.Where(t => t.AllowMove(level)).ToArray();
+            var places = new Tile[WIDTH * HEIGHT];
+            int count = 0;
+            for (int x = 0; x < WIDTH; x++)
+            {
+                for (int y = 0; y < HEIGHT; y++)
+                {
+                    var tile = Map[x, y];
+                    var area = Area4[Map[x, y]];
+                    if (((tile.IsOwned && tile.Active) ||
+                        area.Any(n => n.IsOwned && n.IsOwned)) &&
+                        tile.AllowMove(level))
+                    {
+                        places[count] = tile;
+                        count++;
+                    }
+                }
+            }
+
+            var forTrain = new Tile[count];
+            Array.Copy(places, forTrain, count);
+            return forTrain;
         }
 
         public Tile[] PlacesForTower()
         {
-            return MyPositions.Where(t => t.AllowBuilldTower()).ToArray();
+            var places = new Tile[WIDTH * HEIGHT];
+            int count = 0;
+            for (int x = 0; x < WIDTH; x++)
+            {
+                for (int y = 0; y < HEIGHT; y++)
+                {
+                    var tile = Map[x, y];
+                    if ((tile.IsOwned && tile.Active) && tile.AllowBuilldTower())
+                    {
+                        places[count] = tile;
+                        count++;
+                    }
+                }
+            }
+
+            var forTower = new Tile[count];
+            Array.Copy(places, forTower, count);
+            return forTower;
         }
 
         public bool HasMenace()
         {
             var around = OpponentUnits.SelectMany(op => Area8[Map[op.X, op.Y]]);
             return around.Where(p => p.IsOwned).Any();
-        }
-
-        public Tile UpdateTile(Tile tile)
-        {
-            if (tile.IsOwned && !MyPositions.Contains(tile))
-                MyPositions.Add(tile);
-
-            if (!tile.IsOwned)
-                MyPositions.Remove(tile);
-
-            return tile;
         }
 
         public Entity DestroyOp(Position pos)
@@ -145,7 +171,7 @@ namespace IceAndFire
             Units.Clear();
             Buildings.Clear();
             
-            MyPositions.Clear();
+            MyPlaces = 0;
             touchUnitState.Clear();
         }
 

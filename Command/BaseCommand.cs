@@ -20,7 +20,10 @@
             savedOwner = tile.Owner;
             savedActive = tile.Active;
 
-            map.UpdateTile(tile.MarkIsMe());
+            tile.MarkIsMe();
+
+            if (!(savedOwner == Owner.ME && savedActive))
+                map.MyPlaces++;
         }
 
         public override void Unapply(GameMap game)
@@ -30,7 +33,8 @@
             tile.Owner = savedOwner;
             tile.Active = savedActive;
 
-            game.UpdateTile(tile);
+            if (!(tile.IsOwned && tile.Active))
+                game.MyPlaces--;
         }
     }
 }

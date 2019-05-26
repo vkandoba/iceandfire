@@ -110,7 +110,7 @@ namespace IceAndFire
                     cell.Building = null;
 
                     if (cell.IsOwned && cell.Active)
-                        gameMap.MyPositions.Add(cell);
+                        gameMap.MyPlaces++;
                 }
             }
 

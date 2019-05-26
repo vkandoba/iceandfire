@@ -66,8 +66,8 @@ namespace IceAndFire
                             gameMap.Map[x, y] = tile;
                             if (!tile.IsWall)
                             {
-                                if (tile.IsOwned)
-                                    gameMap.MyPositions.Add(tile);
+                                if (tile.IsOwned && tile.Active)
+                                    gameMap.MyPlaces++;
 
                                 if (tile.Unit != null)
                                     gameMap.Units.Add(tile, tile.Unit);
@@ -86,7 +86,7 @@ namespace IceAndFire
                     // Usefull for symmetric AI
                     //if (data.MeState.Team == Team.Ice)
                     //{
-                    //    gameMap.MyPositions.Reverse();
+                    //    gameMap.MyPlaces.Reverse();
                     //    gameMap.OpPositions.Reverse();
                     //    gameMap.NeutralPositions.Reverse();
                     //}

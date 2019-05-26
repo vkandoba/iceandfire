@@ -54,7 +54,7 @@ namespace IceAndFire
 
         public int RateGame(GameMap game)
         {
-            var rate = game.MyPositions.Count;
+            var rate = game.MyPlaces;
             if (rate > maxRate)
                 maxRate = rate;
             return rate;
