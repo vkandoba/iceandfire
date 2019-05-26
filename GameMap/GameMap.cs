@@ -118,8 +118,16 @@ namespace IceAndFire
 
         public bool HasMenace()
         {
-            var around = OpponentUnits.SelectMany(op => Area8[Map[op.X, op.Y]]);
-            return around.Where(p => p.IsOwned).Any();
+            for (int x = 0; x < WIDTH; x++)
+            {
+                for (int y = 0; y < HEIGHT; y++)
+                {
+                    var area = Area4[Map[x, y]];
+                    if (area.Any(a => a.IsOwned) && area.Any(a => a.IsOpponent))
+                        return true;
+                }
+            }
+            return false;
         }
 
         public Entity DestroyOp(Position pos)
