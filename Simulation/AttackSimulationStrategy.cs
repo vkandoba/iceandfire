@@ -40,7 +40,15 @@ namespace IceAndFire
 
         public IEnumerable<ICommand> PreparTrainCommand(GameMap game, IEnumerable<ICommand> trainCommands)
         {
-            return trainCommands.Where(t => IsGoodPlaceForTrain(game, t as TrainCommand)).OrderByDescending(c => game.OpponentHq.Position.MDistanceTo(c.Target));
+            var cmd = trainCommands.Select(t => t as TrainCommand).Where(t => IsGoodPlaceForTrain(game, t as TrainCommand));
+            var filterd = cmd.Where(t =>
+            {
+                var tile = game.Map[t.Target.X, t.Target.Y];
+                var isAttack = (tile.Unit != null || tile.Building != null || tile.IsUnderAttack);
+                return t.Level == 1 || isAttack;
+            });
+            var sorted = cmd.OrderByDescending(c => game.OpponentHq.Position.MDistanceTo(c.Target));
+            return sorted;
         }
 
         private bool IsGoodPlaceInternal(GameMap game, Position target, HashSet<Position> visited = null)
@@ -59,6 +67,9 @@ namespace IceAndFire
 
         public int RateGame(GameMap game)
         {
+            if (game.OpponentHq.IsOwned)
+                return int.MaxValue;
+
             var units = game.OpponentUnits.Select(u => Unit.TrainCosts[u.Level]).Sum();
             var places = game.OpPlaces * 5;
             var rate = -(units + places);
@@ -69,7 +80,7 @@ namespace IceAndFire
 
         public bool HasImprove(int previous, int next)
         {
-            return next > previous;
+            return next >= previous;
         }
     }
 }
