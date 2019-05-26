@@ -2,6 +2,8 @@
 {
     public class MoveCommand : BaseCommand
     {
+        public Unit Unit => unit;
+
         private readonly Unit unit;
         private readonly Position start;
         private Entity savedDestroy = null;
@@ -36,6 +38,6 @@
             base.Unapply(game);
         }
 
-        public override string ToString() => $"{start} -> {target}";
+        public override string ToString() => $"{unit.Id} {start} -> {target}";
     }
 }
