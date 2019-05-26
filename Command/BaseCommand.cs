@@ -25,7 +25,7 @@
             if (!(savedOwner == Owner.ME && savedActive))
                 map.MyPlaces++;
 
-            if (!(savedOwner == Owner.OPPONENT && savedActive))
+            if (savedOwner == Owner.OPPONENT && savedActive)
                 map.OpPlaces--;
         }
 
@@ -39,7 +39,7 @@
             if (!(tile.IsOwned && tile.Active))
                 game.MyPlaces--;
 
-            if (!(tile.IsOpponent && tile.Active))
+            if (tile.IsOpponent && tile.Active)
                 game.OpPlaces++;
         }
     }
