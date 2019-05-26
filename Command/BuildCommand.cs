@@ -11,7 +11,7 @@
             this.type = type;
         }
 
-        protected override string MakeCmd() => $"BUILD {type.ToString().ToUpper()} {target.X} {target.Y};";
+        protected override string MakeCmd() => $"BUILD {type.ToString().ToUpper()} {target.X} {target.Y}";
 
         protected override void ChangeMap(GameMap map)
         {
