@@ -19,7 +19,7 @@
 
             building = new Building {Owner = Owner.ME, Position = target, Type = type};
             map.Map[target.X, target.Y].Building = building;
-            map.Buildings.Add(building);
+            map.Buildings.Add(map.Map[target.X, target.Y], building);
 
             cost = type == BuildingType.Mine ? IceAndFire.MINE_BUILD_COST : IceAndFire.TOWER_BUILD_COST;
             IceAndFire.game.Me.Gold -= cost;
@@ -28,7 +28,7 @@
         public override void Unapply(GameMap game)
         {
             game.Map[target.X, target.Y].Building = null;
-            game.Buildings.Remove(building);
+            game.Buildings.Remove(game.Map[target.X, target.Y]);
             building = null;
 
             base.Unapply(game);

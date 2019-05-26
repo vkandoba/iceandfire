@@ -25,13 +25,13 @@ namespace IceAndFire
             map.Me.Upkeep += Unit.UpkeepCosts[level];
             trainedUnit = new Unit {Id = rand.Next(50, 100), IsTouch = true, Level = level, Owner = Owner.ME, Position = target};
             map.Map[target.X, target.Y].Unit = trainedUnit;
-            map.Units.Add(trainedUnit);
+            map.Units.Add(map.Map[target.X, target.Y], trainedUnit);
         }
 
         public override void Unapply(GameMap game)
         {
             game.Map[target.X, target.Y].Unit = null;
-            game.Units.Remove(trainedUnit);
+            game.Units.Remove(game.Map[target.X, target.Y]);
             trainedUnit = null;
 
             game.UnDestroyOp(target, savedDestroy);

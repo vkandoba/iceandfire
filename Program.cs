@@ -128,8 +128,8 @@ namespace IceAndFire
                     Type = (BuildingType)int.Parse(inputs[1]),
                     Position = (int.Parse(inputs[2]), int.Parse(inputs[3]))
                 };
-                gameMap.Buildings.Add(building);
                 gameMap.Map[building.X, building.Y].Building = building;
+                gameMap.Buildings.Add(gameMap.Map[building.X, building.Y], building);
             }
 
             // Read Units
@@ -144,8 +144,8 @@ namespace IceAndFire
                     Level = int.Parse(inputs[2]),
                     Position = (int.Parse(inputs[3]), int.Parse(inputs[4]))
                 };
-                gameMap.Units.Add(unit);
                 gameMap.Map[unit.X, unit.Y].Unit = unit;
+                gameMap.Units.Add(gameMap.Map[unit.X, unit.Y], unit);
             }
             gameMap.Me.Upkeep = gameMap.MyUnits.Sum(u => u.Upkeep);
             gameMap.Opponent.Upkeep = gameMap.OpponentUnits.Sum(u => u.Upkeep);
@@ -178,8 +178,8 @@ namespace IceAndFire
             Console.Error.WriteLine($"Opponent gold: {gameMap.OpponentGold} (+{gameMap.OpponentIncome})");
 
             Console.Error.WriteLine("=====");
-            foreach (var b in gameMap.Buildings) Console.Error.WriteLine(b);
-            foreach (var u in gameMap.Units) Console.Error.WriteLine(u);
+            foreach (var b in gameMap.Buildings) Console.Error.WriteLine(b.Value);
+            foreach (var u in gameMap.Units) Console.Error.WriteLine(u.Value);
         }
     }
 }

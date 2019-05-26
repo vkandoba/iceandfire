@@ -70,9 +70,9 @@ namespace IceAndFire
                                     gameMap.MyPositions.Add(tile);
 
                                 if (tile.Unit != null)
-                                    gameMap.Units.Add(tile.Unit);
+                                    gameMap.Units.Add(tile, tile.Unit);
                                 if (tile.Building != null)
-                                    gameMap.Buildings.Add(tile.Building);
+                                    gameMap.Buildings.Add(tile, tile.Building);
                             }
                         }
                     }

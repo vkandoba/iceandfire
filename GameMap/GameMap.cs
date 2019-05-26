@@ -23,11 +23,11 @@ namespace IceAndFire
         
         public Tile MyHq => MyTeam == Team.Fire ? Map[0, 0] : Map[11, 11];
         public Tile OpponentHq => MyTeam == Team.Fire ? Map[11, 11] : Map[0, 0];
-        public List<Unit> MyUnits => Units.Where(u => u.IsOwned).ToList();
-        public List<Unit> OpponentUnits => Units.Where(u => u.IsOpponent).ToList();
+        public List<Unit> MyUnits => Units.Values.Where(u => u.IsOwned).ToList();
+        public List<Unit> OpponentUnits => Units.Values.Where(u => u.IsOpponent).ToList();
 
-        public HashSet<Building> Buildings = new HashSet<Building>();
-        public HashSet<Unit> Units = new HashSet<Unit>();
+        public Dictionary<Tile, Unit> Units = new Dictionary<Tile, Unit>();
+        public Dictionary<Tile, Building> Buildings = new Dictionary<Tile, Building>();
 
         public HashSet<Tile> MyPositions = new HashSet<Tile>();
 
@@ -49,7 +49,7 @@ namespace IceAndFire
             Me.Gold += myGoldChange;
             Opponent.Gold += oppenentGoldChange;
 
-            foreach (var unit in Units.Where(u => u.IsTouch))
+            foreach (var unit in Units.Values.Where(u => u.IsTouch))
             {
                 touchUnitState[unit] = unit.IsTouch;
                 unit.IsTouch = false;
@@ -61,7 +61,7 @@ namespace IceAndFire
             Me.Gold -= myGoldChange;
             Opponent.Gold -= oppenentGoldChange;
 
-            foreach (var unit in Units.Where(u => u.IsTouch))
+            foreach (var unit in Units.Values.Where(u => u.IsTouch))
             {
                 unit.IsTouch = touchUnitState[unit];
             }
@@ -101,14 +101,14 @@ namespace IceAndFire
             if (tile.Unit != null)
             {
                 var opUnit = tile.Unit;
-                Units.Remove(opUnit);
+                Units.Remove(tile);
                 tile.Unit = null;
                 return opUnit;
             }
             if (tile.Building != null)
             {
                 var opBuilding = tile.Building;
-                Buildings.Remove(opBuilding);
+                Buildings.Remove(tile);
                 tile.Building = null;
                 return opBuilding;
             }
@@ -125,14 +125,14 @@ namespace IceAndFire
 
             if (destroed is Unit unit)
             {
-                Units.Add(unit);
+                Units.Add(tile, unit);
                 tile.Unit = unit;
                 return true;
             }
 
             if (destroed is Building building)
             {
-                Buildings.Add(building);
+                Buildings.Add(tile, building);
                 tile.Building = building;
                 return true;
             }
