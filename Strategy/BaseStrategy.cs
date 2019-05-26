@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace IceAndFire
 {
-    public class BaseStrategy : IStrategy
+    public class BaseStrategy
     {
         public void ConstructBuildings() => ConstructMines();
 

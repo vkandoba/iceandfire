@@ -25,21 +25,18 @@ namespace IceAndFire
             Commands.Wait();
 
             var strategy = ChoiceStrategy(gameMap);
-            Console.Error.WriteLine($"strategy: {strategy.GetType().Name} deep: {(strategy as GrowthStrategy)?.Deep}");
+            var deep = IceAndFire.game.MyUnits.Length < 3  || strategy() is AttackSimulationStrategy ? 3 : 2;
+            Console.Error.WriteLine($"strategy: {strategy().GetType().Name} deep: {deep}");
 
-            strategy.MoveUnits();
-            strategy.TrainUnits();
-            strategy.ConstructBuildings();
+            SimStarategy.Moves(strategy, deep);
         }
 
-        private IStrategy ChoiceStrategy(GameMap gameMap)
+        private Func<ISimulationStrategy> ChoiceStrategy(GameMap gameMap)
         {
             if (gameMap.HasMenace())
-                return Strategies.Defense;
-            if (gameMap.MyIncome < 30)
-                return Strategies.Growth;
+                return () => new AttackSimulationStrategy();
 
-            return Strategies.Base;
+            return () => new GrowthSimulationStrategy();
         }
     }
 }

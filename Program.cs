@@ -111,6 +111,9 @@ namespace IceAndFire
 
                     if (cell.IsOwned && cell.Active)
                         gameMap.MyPlaces++;
+
+                    if (cell.IsOpponent && cell.Active)
+                        gameMap.OpPlaces++;
                 }
             }
 

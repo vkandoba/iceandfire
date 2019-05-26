@@ -1,9 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 
 namespace IceAndFire
 {
-    public class DefenseStrategy : IStrategy
+    public class DefenseStrategy
     {
         public void MoveUnits() => Strategies.Base.MoveUnits();
 

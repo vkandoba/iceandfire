@@ -31,6 +31,7 @@ namespace IceAndFire
         public Dictionary<Tile, Building> Buildings = new Dictionary<Tile, Building>();
 
         public int MyPlaces = 0;
+        public int OpPlaces = 0;
 
         public List<Position> MineSpots = new List<Position>();
 
@@ -172,6 +173,7 @@ namespace IceAndFire
             Buildings.Clear();
             
             MyPlaces = 0;
+            OpPlaces = 0;
             touchUnitState.Clear();
         }
 

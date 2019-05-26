@@ -24,6 +24,9 @@
 
             if (!(savedOwner == Owner.ME && savedActive))
                 map.MyPlaces++;
+
+            if (!(savedOwner == Owner.OPPONENT && savedActive))
+                map.OpPlaces--;
         }
 
         public override void Unapply(GameMap game)
@@ -35,6 +38,9 @@
 
             if (!(tile.IsOwned && tile.Active))
                 game.MyPlaces--;
+
+            if (!(tile.IsOpponent && tile.Active))
+                game.OpPlaces++;
         }
     }
 }
