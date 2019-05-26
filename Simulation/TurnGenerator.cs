@@ -66,7 +66,6 @@ namespace IceAndFire
             var unitMoves = CommandGenerator.MovesByUnit(game, p => state.Strategy.IsGoodPlaceForMove(game, p));
             var prepared = state.Strategy.PrepareMoveCommand(game, unitMoves).ToArray();
             return CrossCommands(prepared)
-                .Where(x => x.Select(c => c.Target).Distinct().Count() == x.Length)
                 .Select(commands => commands.Select(c => new CommandWithTurn {Command = c, TurnDeep = state.Deep}).ToList());
         }
 
@@ -115,7 +114,7 @@ namespace IceAndFire
         private IEnumerable<PossibleTurn> GenerateNextTrains(GameMap game, int deepLimit, GenerateState state)
         {
             return BaseGenerateNext(game, deepLimit, state,
-                (g) => state.Strategy.PreparTrainCommand(game, CommandGenerator.Trains(g).Where(cmd => state.Strategy.IsGoodPlaceForTrain(g, cmd.Target)).ToList()).ToList(),
+                (g) => state.Strategy.PreparTrainCommand(game, CommandGenerator.Trains(g)).ToArray(),
                 (g, dlimit, s) =>
                 {
                     var possibleTurn = new PossibleTurn{Commands = s.Prefix, Rate = s.PreviousRate};
@@ -140,7 +139,7 @@ namespace IceAndFire
         }
 
         private IEnumerable<PossibleTurn> BaseGenerateNext(GameMap game, int deepLimit, GenerateState state,
-            Func<GameMap, List<ICommand>> generateNext,
+            Func<GameMap, ICommand[]> generateNext,
             Func<GameMap, int, GenerateState, IEnumerable<PossibleTurn>> continuation)
         {
             var nexts = generateNext(game);
@@ -190,10 +189,20 @@ namespace IceAndFire
             {
                 for (int j = 0; j < tail.Length; j++)
                 {
-                    ICommand[] item = new ICommand[tail[j].Length + 1];
-                    item[0] = head[i];
-                    Array.Copy(tail[j], 0, item, 1, tail[j].Length);
-                    product.Add(item);
+                    var hasDuplicate = false;
+                    for (int k = 0; k < tail[j].Length; k++)
+                    {
+                        if (head[i].Target == tail[j][k].Target)
+                            hasDuplicate = true;
+                    }
+
+                    if (!hasDuplicate)
+                    {
+                        ICommand[] item = new ICommand[tail[j].Length + 1];
+                        item[0] = head[i];
+                        Array.Copy(tail[j], 0, item, 1, tail[j].Length);
+                        product.Add(item);
+                    }
                 }
             }
             return product.ToArray();

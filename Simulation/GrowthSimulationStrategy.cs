@@ -35,7 +35,7 @@ namespace IceAndFire
 
         public IEnumerable<ICommand> PreparTrainCommand(GameMap game, IEnumerable<ICommand> trainCommands)
         {
-            return trainCommands.OrderByDescending(c => game.MyHq.Position.MDistanceTo(c.Target));
+            return trainCommands.Where(t => IsGoodPlaceForTrain(game, t.Target)).OrderByDescending(c => game.MyHq.Position.MDistanceTo(c.Target));
         }
 
         private bool IsGoodPlaceInternal(GameMap game, Position target, HashSet<Position> visited = null)

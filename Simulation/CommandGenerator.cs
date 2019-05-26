@@ -28,7 +28,7 @@ namespace IceAndFire
             return MovesByUnit(map, (p) => true).SelectMany(x => x);
         }
 
-        public static IEnumerable<ICommand> Trains(GameMap map)
+        public static ICommand[] Trains(GameMap map)
         {
             if (map.MyGold >= Unit.TrainCosts[1])
             {

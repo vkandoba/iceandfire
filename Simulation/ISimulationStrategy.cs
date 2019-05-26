@@ -5,7 +5,6 @@ namespace IceAndFire
     public interface ISimulationStrategy
     {
         void StartSimulate(GameMap game);
-        bool IsGoodPlaceForTrain(GameMap game, Position target);
         bool IsGoodPlaceForMove(GameMap game, Position target);
         bool IsGoodTurnForContinue(GameMap gaWme, TurnGenerator.PossibleTurn turn);
         IEnumerable<ICommand[]> PrepareMoveCommand(GameMap game, IEnumerable<ICommand[]> moveCommands);
