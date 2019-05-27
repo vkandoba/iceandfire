@@ -35,19 +35,19 @@ namespace IceAndFire
 
         public IEnumerable<ICommand[]> PrepareMoveCommand(GameMap game, IEnumerable<ICommand[]> moveCommands)
         {
-            return moveCommands.OrderByDescending(cmds => cmds.Min(c => game.OpponentHq.Position.MDistanceTo(c.Target)));
+            return moveCommands.OrderBy(cmds => cmds.Min(c => game.OpponentHq.Position.MDistanceTo(c.Target)));
         }
 
         public IEnumerable<ICommand> PreparTrainCommand(GameMap game, IEnumerable<ICommand> trainCommands)
         {
-            var cmd = trainCommands.Select(t => t as TrainCommand).Where(t => IsGoodPlaceForTrain(game, t as TrainCommand));
+            var cmd = trainCommands.Select(t => t as TrainCommand).Where(t => IsGoodPlaceForTrain(game, t));
             var filterd = cmd.Where(t =>
             {
                 var tile = game.Map[t.Target.X, t.Target.Y];
                 var isAttack = (tile.Unit != null || tile.Building != null || tile.IsUnderAttack);
                 return t.Level == 1 || isAttack;
             });
-            var sorted = cmd.OrderByDescending(c => game.OpponentHq.Position.MDistanceTo(c.Target));
+            var sorted = filterd.OrderBy(c => game.OpponentHq.Position.MDistanceTo(c.Target));
             return sorted;
         }
 
@@ -70,9 +70,12 @@ namespace IceAndFire
             if (game.OpponentHq.IsOwned)
                 return int.MaxValue;
 
+            if ((game.MyIncome - game.MyUpkeep) <= 0)
+                return -2000;
+
             var units = game.OpponentUnits.Select(u => Unit.TrainCosts[u.Level]).Sum();
             var places = game.OpPlaces * 5;
-            var rate = -(units + places);
+            var rate = -(units + places) - (game.Me.Upkeep / 20);
             if (rate > maxRate)
                 maxRate = rate;
             return rate;
