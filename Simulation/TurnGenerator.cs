@@ -65,7 +65,7 @@ namespace IceAndFire
         {
             var unitMoves = CommandGenerator.MovesByUnit(game, p => state.Strategy.IsGoodPlaceForMove(game, p));
             var prepared = state.Strategy.PrepareMoveCommand(game, unitMoves).ToArray();
-            return CrossCommands(prepared)
+            return CrossCommands(prepared.Where(s => s.Any()).ToArray())
                 .Select(commands => commands.Select(c => new CommandWithTurn {Command = c, TurnDeep = state.Deep}).ToList());
         }
 
@@ -204,6 +204,7 @@ namespace IceAndFire
                         product.Add(item);
                     }
                 }
+                //product.Add(head);
             }
             return product.ToArray();
         }
