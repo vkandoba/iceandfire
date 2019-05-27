@@ -143,6 +143,7 @@ namespace IceAndFire
                     gameMap.Buildings.Add(tile, building);
                     if (building.IsOpponent && building.IsTower)
                     {
+                        tile.IsUnderAttack = true;
                         var towerArea = gameMap.Area4[tile];
                         for (int b = 0; b < towerArea.Length; b++)
                         {
