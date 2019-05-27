@@ -25,7 +25,7 @@ namespace IceAndFire
 
         public bool IsGoodPlaceForMove(GameMap game, Position target)
         {
-            return IsGoodPlaceInternal(game, target);
+            return true;
         }
 
         public bool IsGoodTurnForContinue(GameMap game, TurnGenerator.PossibleTurn turn)
@@ -35,7 +35,16 @@ namespace IceAndFire
 
         public IEnumerable<ICommand[]> PrepareMoveCommand(GameMap game, IEnumerable<ICommand[]> moveCommands)
         {
-            return moveCommands.OrderBy(cmds => cmds.Min(c => game.DistanceToOpHQ[c.Target.X, c.Target.Y]));
+            var moves = moveCommands.ToArray();
+            for (int i = 0; i < moves.Length; i++)
+            {
+                var hasAttack = moves[i].Any(x => IsGoodPlaceInternal(game, x.Target, null));
+                if (hasAttack)
+                    moves[i] = moves[i].Where(x => IsGoodPlaceInternal(game, x.Target, null)).ToArray();
+                else
+                    moves[i] = moves[i].OrderBy(c => game.DistanceToOpHQ[c.Target.X, c.Target.Y]).Take(1).ToArray();
+            }
+            return moves.OrderBy(cmds => cmds.Min(c => game.DistanceToOpHQ[c.Target.X, c.Target.Y]));
         }
 
         public IEnumerable<ICommand> PreparTrainCommand(GameMap game, IEnumerable<ICommand> trainCommands)
@@ -73,7 +82,7 @@ namespace IceAndFire
             if (game.OpponentHq.IsOwned)
                 return int.MaxValue;
 
-            if ((game.MyUpkeep - game.MyIncome) * 2 >=  game.MyGold && game.MyGold < 100)
+            if ((game.MyUpkeep - game.MyIncome) > 0)
                 return -2000;
 
             var actualPlaces = Geometry.MakeWave(game, t => t.Active && t.IsOpponent, game.OpponentHq);
