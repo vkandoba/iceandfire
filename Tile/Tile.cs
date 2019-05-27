@@ -33,7 +33,7 @@ namespace IceAndFire
         {
             if (IsWall) return "x";
 
-            if (Building == null && Unit == null)
+            if (Building == null && Unit == null || !Active)
                 return Owner == Owner.NEUTRAL || !Active ? "0" : ((int)Owner).ToString();
 
             if (Building?.IsHq == true) return "h";
@@ -41,7 +41,7 @@ namespace IceAndFire
             if (Building?.IsMine == true) return "m";
 
             if (Unit != null)
-                return Unit.IsTouch ? "f" : IsOpponent ? "e" : (Unit.Level == 1 ? "u" : (Unit.Level == 2 ? "s" : "k"));
+                return IsOpponent ? "e" : (Unit.Level == 1 ? "u" : (Unit.Level == 2 ? "s" : "k"));
 
             if (HasMineSpot) return "g";
 
