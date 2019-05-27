@@ -70,7 +70,7 @@ namespace IceAndFire
             if (game.OpponentHq.IsOwned)
                 return int.MaxValue;
 
-            if ((game.MyIncome - game.MyUpkeep) <= 0)
+            if ((game.MyUpkeep - game.MyIncome) * 2 >=  game.MyGold)
                 return -2000;
 
             var units = game.OpponentUnits.Select(u => Unit.TrainCosts[u.Level]).Sum();
