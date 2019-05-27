@@ -21,6 +21,9 @@ namespace IceAndFire
         public PlayerState Opponent = new PlayerState();
 
         public readonly Tile[,] Map = new Tile[WIDTH, WIDTH];
+
+        public int[,] DistanceToMyHQ;
+        public int[,] DistanceToOpHQ;
         
         public Tile MyHq => MyTeam == Team.Fire ? Map[0, 0] : Map[11, 11];
         public Tile OpponentHq => MyTeam == Team.Fire ? Map[11, 11] : Map[0, 0];
@@ -198,6 +201,12 @@ namespace IceAndFire
                         Area8[tile] = Area8Internal((x, y));
                 }
             }
+        }
+
+        public void UpdateDistances()
+        {
+            DistanceToMyHQ = Geometry.DistancesFrom(this, MyHq);
+            DistanceToOpHQ = Geometry.DistancesFrom(this, OpponentHq);
         }
 
         private Tile[] Area4Internal(Position pos)

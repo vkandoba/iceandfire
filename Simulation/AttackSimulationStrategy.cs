@@ -35,7 +35,7 @@ namespace IceAndFire
 
         public IEnumerable<ICommand[]> PrepareMoveCommand(GameMap game, IEnumerable<ICommand[]> moveCommands)
         {
-            return moveCommands.OrderBy(cmds => cmds.Min(c => game.OpponentHq.Position.MDistanceTo(c.Target)));
+            return moveCommands.OrderBy(cmds => cmds.Min(c => game.DistanceToOpHQ[c.Target.X, c.Target.Y]));
         }
 
         public IEnumerable<ICommand> PreparTrainCommand(GameMap game, IEnumerable<ICommand> trainCommands)
@@ -47,7 +47,7 @@ namespace IceAndFire
                 var isAttack = (tile.Unit != null || tile.Building != null || tile.IsUnderAttack);
                 return t.Level == 1 || isAttack;
             });
-            var sorted = filterd.OrderBy(c => game.OpponentHq.Position.MDistanceTo(c.Target));
+            var sorted = filterd.OrderBy(c => game.DistanceToOpHQ[c.Target.X, c.Target.Y]);
             return sorted;
         }
 
