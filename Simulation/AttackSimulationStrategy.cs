@@ -40,7 +40,10 @@ namespace IceAndFire
 
         public IEnumerable<ICommand> PreparTrainCommand(GameMap game, IEnumerable<ICommand> trainCommands)
         {
-            var cmd = trainCommands.Select(t => t as TrainCommand).Where(t => IsGoodPlaceForTrain(game, t));
+            var cmd = trainCommands.Select(t => t as TrainCommand).Where(t => IsGoodPlaceForTrain(game, t)).ToArray();
+            var hasAttack = cmd.Any(t => game.Map[t.Target.X, t.Target.Y].IsOpponent && game.Map[t.Target.X, t.Target.Y].Active);
+            if (hasAttack)
+                cmd = cmd.Where(t => game.Map[t.Target.X, t.Target.Y].IsOpponent && game.Map[t.Target.X, t.Target.Y].Active).ToArray();
             var filterd = cmd.Where(t =>
             {
                 var tile = game.Map[t.Target.X, t.Target.Y];
@@ -70,7 +73,7 @@ namespace IceAndFire
             if (game.OpponentHq.IsOwned)
                 return int.MaxValue;
 
-            if ((game.MyUpkeep - game.MyIncome) * 2 >=  game.MyGold)
+            if ((game.MyUpkeep - game.MyIncome) * 2 >=  game.MyGold && game.MyGold < 100)
                 return -2000;
 
             var units = game.OpponentUnits.Select(u => Unit.TrainCosts[u.Level]).Sum();
