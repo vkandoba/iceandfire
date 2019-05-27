@@ -49,7 +49,7 @@ namespace IceAndFire
                 gameEngine.Output.Clear();
                 Measure("solve", () => gameEngine.Solve(gameMap));
 
-                //DebugMap(gameMap);
+                DebugMap(gameMap);
                 Console.WriteLine(gameEngine.Output.ToString());
                 gameEngine.Turn++;
             }
@@ -108,6 +108,7 @@ namespace IceAndFire
 
                     cell.Unit = null;
                     cell.Building = null;
+                    cell.IsUnderAttack = false;
 
                     if (cell.IsOwned && cell.Active)
                         gameMap.MyPlaces++;
@@ -136,14 +137,17 @@ namespace IceAndFire
                     Position = (int.Parse(inputs[2]), int.Parse(inputs[3]))
                 };
                 var tile = gameMap.Map[building.X, building.Y];
-                tile.Building = building;
-                gameMap.Buildings.Add(tile, building);
-                if (building.IsOpponent && building.IsTower)
+                if (tile.Active)
                 {
-                    var towerArea = gameMap.Area4[tile];
-                    for (int b = 0; b < towerArea.Length; b++)
+                    tile.Building = building;
+                    gameMap.Buildings.Add(tile, building);
+                    if (building.IsOpponent && building.IsTower)
                     {
-                        towerArea[b].IsUnderAttack = true;
+                        var towerArea = gameMap.Area4[tile];
+                        for (int b = 0; b < towerArea.Length; b++)
+                        {
+                            towerArea[b].IsUnderAttack = true;
+                        }
                     }
                 }
             }
@@ -160,10 +164,15 @@ namespace IceAndFire
                     Level = int.Parse(inputs[2]),
                     Position = (int.Parse(inputs[3]), int.Parse(inputs[4]))
                 };
-                gameMap.Map[unit.X, unit.Y].Unit = unit;
-                gameMap.Units.Add(gameMap.Map[unit.X, unit.Y], unit);
+                var tile = gameMap.Map[unit.X, unit.Y];
+                if (tile.Active)
+                {
+                    tile.Unit = unit;
+                    gameMap.Units.Add(tile, unit);
+                }
             }
             gameMap.Me.Upkeep = gameMap.MyUnits.Sum(u => u.Upkeep);
+            Console.Error.WriteLine($"{gameMap.Me}");
             gameMap.Opponent.Upkeep = gameMap.OpponentUnits.Sum(u => u.Upkeep);
 
             // --------------------------------
