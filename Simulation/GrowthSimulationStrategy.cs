@@ -20,7 +20,7 @@ namespace IceAndFire
 
         public bool IsGoodPlaceForMove(GameMap game, Position target)
         {
-            return true;
+            return IsGoodPlaceInternal(game, target);
         }
 
         public bool IsGoodTurnForContinue(GameMap game, TurnGenerator.PossibleTurn turn)
@@ -30,16 +30,7 @@ namespace IceAndFire
 
         public IEnumerable<ICommand[]> PrepareMoveCommand(GameMap game, IEnumerable<ICommand[]> moveCommands)
         {
-            var moves = moveCommands.ToArray();
-            for (int i = 0; i < moves.Length; i++)
-            {
-                var hasAttack = moves[i].Any(x => IsGoodPlaceInternal(game, x.Target, null));
-                if (hasAttack)
-                    moves[i] = moves[i].Where(x => IsGoodPlaceInternal(game, x.Target, null)).ToArray();
-                else
-                    moves[i] = moves[i].OrderBy(c => game.DistanceToOpHQ[c.Target.X, c.Target.Y]).Take(1).ToArray();
-            }
-            return moves.OrderByDescending(cmds => cmds.Sum(c => game.DistanceToMyHQ[c.Target.X, c.Target.Y]));
+            return moveCommands.OrderByDescending(cmds => cmds.Sum(c => game.DistanceToMyHQ[c.Target.X, c.Target.Y]));
         }
 
         public IEnumerable<ICommand> PreparTrainCommand(GameMap game, IEnumerable<ICommand> trainCommands)
