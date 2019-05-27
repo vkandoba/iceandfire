@@ -16,7 +16,7 @@ namespace IceAndFire
             var mySpots = myTerritory.Where(x => x.HasMineSpot && x.Building == null).ToArray();
             if (mySpots.Any() && IceAndFire.game.MyGold > IceAndFire.MINE_BUILD_COST)
             {
-                var posForMine = mySpots.Select(s => s.Position).OrderBy(IceAndFire.game.MyHq.Position.MDistanceTo).First();
+                var posForMine = mySpots.Select(s => s.Position).OrderBy(s => IceAndFire.game.DistanceToMyHQ[s.X, s.Y]).First();
                 Commands.Build(BuildingType.Mine, posForMine);
             }
         }

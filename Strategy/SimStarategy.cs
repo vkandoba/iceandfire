@@ -12,6 +12,7 @@ namespace IceAndFire
             if (!possibleTurns.Any())
             {
                 Console.Error.WriteLine("WARNING NO MOVES");
+                Strategies.Base.ConstructMines();
                 Commands.Wait();
                 return;
             }
