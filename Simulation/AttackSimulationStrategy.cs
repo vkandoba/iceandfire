@@ -79,7 +79,7 @@ namespace IceAndFire
             var actualPlaces = Geometry.MakeWave(game, t => t.Active && t.IsOpponent, game.OpponentHq);
             var actual_units = game.Units.Keys.Except(actualPlaces.Keys);
             var units = actual_units.Select(k => game.Units[k]).Where(u => u.IsOpponent)
-                            .Select(u => Unit.TrainCosts[u.Level]).Sum();
+                            .Select(u => Unit.TrainCosts[u.Level] + 5).Sum();
             var places = actualPlaces.Count * 5;
             var rate = -(units + places) - (game.Me.Upkeep / 20);
             if (rate > maxRate)
