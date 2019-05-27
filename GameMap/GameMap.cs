@@ -83,7 +83,7 @@ namespace IceAndFire
                     var tile = Map[x, y];
                     var area = Area4[Map[x, y]];
                     if (((tile.IsOwned && tile.Active) ||
-                        area.Any(n => n.IsOwned && n.IsOwned)) &&
+                        area.Any(n => n.IsOwned && n.Active)) &&
                         tile.AllowMove(level))
                     {
                         places[count] = tile;
