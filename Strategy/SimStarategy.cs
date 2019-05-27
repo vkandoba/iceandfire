@@ -13,6 +13,7 @@ namespace IceAndFire
             {
                 Console.Error.WriteLine("WARNING NO MOVES");
                 Commands.Wait();
+                return;
             }
             var bestRate = possibleTurns.Max(x => x.Rate);
             var bestTurns = possibleTurns.Where(x => bestRate == x.Rate).ToArray();
