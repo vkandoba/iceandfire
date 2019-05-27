@@ -76,8 +76,11 @@ namespace IceAndFire
             if ((game.MyUpkeep - game.MyIncome) * 2 >=  game.MyGold && game.MyGold < 100)
                 return -2000;
 
-            var units = game.OpponentUnits.Select(u => Unit.TrainCosts[u.Level]).Sum();
-            var places = game.OpPlaces * 5;
+            var actualPlaces = Geometry.MakeWave(game, t => t.Active && t.IsOpponent, game.OpponentHq);
+            var actual_units = game.Units.Keys.Except(actualPlaces.Keys);
+            var units = actual_units.Select(k => game.Units[k]).Where(u => u.IsOpponent)
+                            .Select(u => Unit.TrainCosts[u.Level]).Sum();
+            var places = actualPlaces.Count * 5;
             var rate = -(units + places) - (game.Me.Upkeep / 20);
             if (rate > maxRate)
                 maxRate = rate;
