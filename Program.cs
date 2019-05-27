@@ -49,7 +49,7 @@ namespace IceAndFire
                 gameEngine.Output.Clear();
                 Measure("solve", () => gameEngine.Solve(gameMap));
 
-                DebugMap(gameMap);
+                //DebugMap(gameMap);
                 Console.WriteLine(gameEngine.Output.ToString());
                 gameEngine.Turn++;
             }

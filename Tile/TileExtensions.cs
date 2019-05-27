@@ -18,7 +18,7 @@
                 if (tile.Unit.IsOwned)
                     return false;
 
-                return level != 1 && level >= tile.Unit.Level;
+                return level != 1 && level > tile.Unit.Level;
             }
 
             return true;
