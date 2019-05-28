@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tester", "Tester.csproj", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "builder", "..\Builder\builder.csproj", "{0F1C8C36-DB8E-4AE2-8063-969646DE02A0}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IceAndFireTest", "..\IceAndFireTest\IceAndFireTest.csproj", "{5144308A-622B-4C11-9F4F-0FB39E0DAFDA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IceAndFireTest", "IceAndFireTest\IceAndFireTest.csproj", "{5144308A-622B-4C11-9F4F-0FB39E0DAFDA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

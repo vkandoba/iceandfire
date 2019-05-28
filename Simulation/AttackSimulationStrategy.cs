@@ -73,7 +73,7 @@ namespace IceAndFire
             if (game.OpponentHq.IsOwned)
                 return int.MaxValue;
 
-            if ((game.MyUpkeep - game.MyIncome) * 2 >=  game.MyGold && game.MyGold < 100)
+            if ((game.MyUpkeep - game.MyIncome) > 0)
                 return -2000;
 
             var actualPlaces = Geometry.MakeWave(game, t => t.Active && t.IsOpponent, game.OpponentHq);

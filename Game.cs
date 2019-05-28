@@ -26,7 +26,7 @@ namespace IceAndFire
 
             var strategy = ChoiceStrategy(gameMap);
             var isAttack = strategy() is AttackSimulationStrategy;
-            var deep = (isAttack) ? 1 : (Turn < 5 && IceAndFire.game.MyUnits.Length < 3 ? 3 : 2);
+            var deep = (isAttack) ? 1 : (Turn <= 5 && IceAndFire.game.MyUnits.Length < 5 ? 2 : 1);
             Console.Error.WriteLine($"strategy: {strategy().GetType().Name} deep: {deep}");
 
             SimStarategy.Moves(strategy, deep);
